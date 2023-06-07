@@ -170,26 +170,12 @@ public class EducationTermService {
                 .build();
     }
 
+    //GetById ile
+    public EducationTerm getById(Long educationTermId) {
+        if(educationTermRepository.existsByIdEquals(educationTermId)){
+            throw new ResourceNotFoundException(Messages.EDUCATION_TERM_NOT_FOUND_MESSAGE);
+        }
+        return educationTermRepository.findByIdEquals(educationTermId);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    }
 }

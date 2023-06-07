@@ -24,6 +24,10 @@ public class Messages {
 
     public static final String NOT_FOUND_LESSON_MESSAGE ="Error:Lesson with lesson name %s NOT FOUND ";
 
+    public static final String NOT_FOUND_LESSON_IN_LIST ="Error:Lesson not found IN LIST ";
+
+    public static final String TIME_NOT_VALID_MESSAGE ="Error: iNCORRECT TIME ";
+
 
 
 
