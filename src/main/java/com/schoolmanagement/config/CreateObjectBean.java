@@ -1,7 +1,9 @@
 package com.schoolmanagement.config;
 
+import com.schoolmanagement.entity.concretes.Teacher;
 import com.schoolmanagement.payload.dto.DeanDto;
 import com.schoolmanagement.payload.dto.LessonProgramDto;
+import com.schoolmanagement.payload.dto.TeacherRequestDto;
 import com.schoolmanagement.payload.dto.ViceDeanDto;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,5 +26,9 @@ public class CreateObjectBean {
         return new LessonProgramDto();
     }
 
+    @Bean
+    public TeacherRequestDto teacherRequestDto(){
+        return new TeacherRequestDto();
+    }
 
 }

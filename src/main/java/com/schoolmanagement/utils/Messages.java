@@ -26,10 +26,11 @@ public class Messages {
 
     public static final String NOT_FOUND_LESSON_IN_LIST ="Error:Lesson not found IN LIST ";
 
+
     public static final String TIME_NOT_VALID_MESSAGE ="Error: iNCORRECT TIME ";
 
 
-
+    public static final String LESSON_PROGRAM_NOT_FOUND_MESSAGE ="Error: Lesson program not found ";
 
 
 }

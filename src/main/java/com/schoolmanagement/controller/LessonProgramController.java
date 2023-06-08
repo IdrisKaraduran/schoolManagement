@@ -5,6 +5,7 @@ import com.schoolmanagement.payload.Response.ResponseMessage;
 import com.schoolmanagement.payload.request.LessonProgramRequest;
 import com.schoolmanagement.service.LessonProgramService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,9 @@ public class LessonProgramController {
 
 
     @GetMapping("/getAll")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER','TEACHER','STUDENT')")
     public List<LessonProgramResponse> getAll(){
+
         return lessonProgramService.getAllLessonProgram();
     }
 
@@ -43,7 +46,7 @@ public class LessonProgramController {
     }
 
     @GetMapping("/getAllUnassigned")
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER','TEACHER','STUDENT')")
     public List<LessonProgramResponse> getAllUnassigned(){
         return lessonProgramService.getAllLessonProgramUnassigned();
     }
@@ -73,6 +76,31 @@ public class LessonProgramController {
         return lessonProgramService.getLessonProgramByTeacher(username);
 
     }
+
+    ///getAllLessonProgramByStudent
+    @GetMapping("/getAllLessonProgramByStudent")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER','TEACHER','STUDENT')")
+    public Set<LessonProgramResponse> getAllLessonProgramByStudent(HttpServletRequest httpServletRequest){
+        //istek icindeki username e ulasmak icin HttpRequest parametre aliyoruz
+
+        String username = (String) httpServletRequest.getAttribute("username");
+
+        return lessonProgramService.getLessonProgramByStudent(username);
+    }
+
+    //getAllWithPage
+    @GetMapping("/search")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER','TEACHER','STUDENT')")
+    public Page<LessonProgramResponse> search(
+        @RequestParam(value = "page") int page,
+        @RequestParam(value = "size") int size,
+        @RequestParam(value = "sort") String sort,
+        @RequestParam(value = "type") String type
+    ){
+        return lessonProgramService.search(page,size,sort,type);
+    }
+
+
 
 
 
