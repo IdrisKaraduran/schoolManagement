@@ -79,7 +79,7 @@ public class LessonProgramController {
 
     ///getAllLessonProgramByStudent
     @GetMapping("/getAllLessonProgramByStudent")
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER','TEACHER','STUDENT')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER','TEACHER')")
     public Set<LessonProgramResponse> getAllLessonProgramByStudent(HttpServletRequest httpServletRequest){
         //istek icindeki username e ulasmak icin HttpRequest parametre aliyoruz
 

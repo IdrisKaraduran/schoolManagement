@@ -20,10 +20,10 @@ import java.util.Set;
 @SuperBuilder
 public class TeacherRequest extends BaseUserRequest {
     @NotNull(message = "Please Select Lesson")
-    private Set<Long> lessonIdList;
+    private Set<Long> lessonsIdList;
 
     @NotNull(message = "Please Select IsAdvisor Teacher")
-    private Boolean isAdvisorTeacher;
+    private boolean isAdvisorTeacher;//Bilerek kucuk yazdik buyuk yazinca ve is ile basladigi icin getter methodu iyi calismiyor.
     @NotNull(message = "Please enter your email")
     @Email(message = "Please enter valid email")
     @Size(min = 5,max = 50,message = "Your email should be between 5 and 50 chars")

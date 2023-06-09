@@ -10,6 +10,7 @@ import com.schoolmanagement.payload.dto.DeanDto;
 import com.schoolmanagement.payload.request.DeanRequest;
 import com.schoolmanagement.repository.DeanRepository;
 import com.schoolmanagement.utils.CheckParameterUpdateMethod;
+import com.schoolmanagement.utils.FieldControl;
 import com.schoolmanagement.utils.Messages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,13 +38,17 @@ public class DeanService {
 
     private final UserRoleService userRoleService;
     private final PasswordEncoder passwordEncoder;
+    private final FieldControl fieldControl;
 
 
 
     public ResponseMessage<DeanResponse> save(DeanRequest deanRequest) {
 
         //Duplicate controlu yapiliyor
-        adminService.checkDuplicate(deanRequest.getUsername(),
+//        adminService.checkDuplicate(deanRequest.getUsername(),
+//                deanRequest.getSsn(),
+//                deanRequest.getPhoneNumber());
+        fieldControl.checkDuplicate(deanRequest.getUsername(),
                 deanRequest.getSsn(),
                 deanRequest.getPhoneNumber());
 
@@ -65,7 +70,6 @@ public class DeanService {
                 .object(createDeanResponse(dean)).build();//yardimci method lazim
     }
     private Dean createDTOForDean(DeanRequest deanRequest){
-
         return deanDto.dtoDean(deanRequest);
     }
 
@@ -95,7 +99,8 @@ public class DeanService {
         }else if(!CheckParameterUpdateMethod.checkParameter(dean.get(),newDean)){
             //! kullanmamizin  nedeni esit degil mi diye kontrol ettim.Method esit mi diye kontrol ediyor cunku
             //Optional yapinin icindeki nesneyi getir ddemek icin get() methodunu kullandim
-            adminService.checkDuplicate(newDean.getUsername(),newDean.getSsn(),newDean.getPhoneNumber());
+            // adminService.checkDuplicate(newDean.getUsername(),newDean.getSsn(),newDean.getPhoneNumber());
+            fieldControl.checkDuplicate(newDean.getUsername(),newDean.getSsn(),newDean.getPhoneNumber());
             //Tek parametre farkli ise nolacak bunu postmanda test et.
         }
         //guncellenen yeni bilgiler ile Dean objesini kaydedecegiz.

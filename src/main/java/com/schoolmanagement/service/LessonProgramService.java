@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class LessonProgramService {
 
-    private final LessonProgramService lessonProgramService;
+
     private final LessonService lessonService;
     private final EducationTermService educationTermService;
     private final LessonProgramDto lessonProgramDto;
