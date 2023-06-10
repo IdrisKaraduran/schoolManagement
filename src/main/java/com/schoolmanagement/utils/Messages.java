@@ -32,6 +32,8 @@ public class Messages {
 
     public static final String LESSON_PROGRAM_NOT_FOUND_MESSAGE ="Error: Lesson program not found ";
 
+    public static final String LESSON_PROGRAM_EXIST_MESSAGE ="Error: Course schedule can not be selected for the same hour and date";
+
 
 }
 

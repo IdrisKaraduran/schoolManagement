@@ -3,10 +3,12 @@ package com.schoolmanagement.service;
 import com.schoolmanagement.entity.concretes.EducationTerm;
 import com.schoolmanagement.entity.concretes.Lesson;
 import com.schoolmanagement.entity.concretes.LessonProgram;
+import com.schoolmanagement.entity.concretes.Teacher;
 import com.schoolmanagement.exception.BadRequestException;
 import com.schoolmanagement.exception.ResourceNotFoundException;
 import com.schoolmanagement.payload.Response.LessonProgramResponse;
 import com.schoolmanagement.payload.Response.ResponseMessage;
+import com.schoolmanagement.payload.Response.TeacherResponse;
 import com.schoolmanagement.payload.dto.LessonProgramDto;
 import com.schoolmanagement.payload.request.LessonProgramRequest;
 import com.schoolmanagement.repository.LessonProgramRepository;
@@ -96,7 +98,26 @@ public class LessonProgramService {
                 .stopTime(lessonProgram.getStopTime())
                 .lessonProgramId(lessonProgram.getId())
                 .lessonName(lessonProgram.getLesson())
+                .teachers(lessonProgram.getTeachers()
+                        .stream()
+                        .map(this::createTeacher)
+                        .collect(Collectors.toSet()))
                 //TODO Teacher ve Student yazilinca buraya ekleme yapilacak
+                .build();
+    }
+    public TeacherResponse createTeacher(Teacher teacher){
+
+        return TeacherResponse.builder()
+                .userId(teacher.getId())
+                .name(teacher.getName())
+                .surname(teacher.getSurname())
+                .birthDay(teacher.getBirthDay())
+                .birthPlace(teacher.getBirthPlace())
+                .ssn(teacher.getSsn())
+                .phoneNumber(teacher.getPhoneNumber())
+                .gender(teacher.getGender())
+                .email(teacher.getEmail())
+                .username(teacher.getUsername())
                 .build();
     }
 
@@ -159,6 +180,7 @@ public class LessonProgramService {
                 .stopTime(lessonProgram.getStopTime())
                 .lessonProgramId(lessonProgram.getId())
                 .lessonName(lessonProgram.getLesson())
+
                 //TODO Teacher ve Student yazilinca buraya ekleme yapilacak
                 .build();
     }
@@ -182,7 +204,10 @@ public class LessonProgramService {
                 .stopTime(lessonProgram.getStopTime())
                 .lessonProgramId(lessonProgram.getId())
                 .lessonName(lessonProgram.getLesson())
-                //Teacher eklenecek
+                .teachers(lessonProgram.getTeachers()
+                        .stream()
+                        .map(this::createTeacher)
+                        .collect(Collectors.toSet()))
                 .build();
     }
 

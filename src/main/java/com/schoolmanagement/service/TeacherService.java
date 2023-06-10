@@ -12,6 +12,7 @@ import com.schoolmanagement.payload.request.ChooseLessonTeacherRequest;
 import com.schoolmanagement.payload.request.TeacherRequest;
 import com.schoolmanagement.repository.TeacherRepository;
 import com.schoolmanagement.utils.CheckParameterUpdateMethod;
+import com.schoolmanagement.utils.CheckSameLessonProgram;
 import com.schoolmanagement.utils.FieldControl;
 import com.schoolmanagement.utils.Messages;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,7 @@ public class TeacherService {
     private final PasswordEncoder passwordEncoder;
     private final TeacherRequestDto teacherRequestDto;
     private final UserRoleService userRoleService;
+    private final AdvisorTeacherService advisorTeacherService;
 
     public ResponseMessage<TeacherResponse> save(TeacherRequest teacherRequest) {
 
@@ -66,7 +68,11 @@ public class TeacherService {
             teacher.setPassword(passwordEncoder.encode(teacherRequest.getPassword()));
             //DB ye kayit islemi yapiliyor.
             Teacher savedTeacher = teacherRepository.save(teacher);
-            //TODO AdvisorTeacher yazilinca ekleme yapilacak
+           //Degisiklik Advisor Teacher Tablosunda yapilacagi icin teacher kaydinin yapilmasi sorun degil
+            if (teacherRequest.isAdvisorTeacher()){
+                advisorTeacherService.saveAdvisorTeacher(savedTeacher);
+            }
+
 
             return ResponseMessage.<TeacherResponse>builder()
                     .message("Teacher saved successfully")
@@ -100,6 +106,7 @@ public class TeacherService {
     }
 
 
+    //GetAll
     public List<TeacherResponse> getAllTeacher() {
 
         return teacherRepository.findAll().stream()
@@ -107,6 +114,7 @@ public class TeacherService {
                 .collect(Collectors.toList());
     }
 
+    //Update
 
     public ResponseMessage<TeacherResponse> updateTeacher(TeacherRequest request, Long userId) {
 
@@ -130,6 +138,7 @@ public class TeacherService {
 
        }
 
+       //Dto Pojo za cevrilizor
       Teacher updatedTeacher= createUpdateTeacher(request,userId);
 
        //password encode ediliyor
@@ -138,7 +147,9 @@ public class TeacherService {
         updatedTeacher.setLessonsProgramList(lessons);//TODO BURAYA BAKILACAK
 
        Teacher savedTeacher = teacherRepository.save(updatedTeacher);
-       //TODO advisorteacher yazilinca eklenecek.
+
+       advisorTeacherService.updateAdvisorTeacher(request.isAdvisorTeacher(),savedTeacher);
+
         return ResponseMessage.<TeacherResponse>builder()
                 .message("Teacher updated")
                 .httpStatus(HttpStatus.CREATED)
@@ -174,6 +185,7 @@ public class TeacherService {
     }
 
 
+    //GetTeacherByName
     public List<TeacherResponse> getTeacherByName(String teacherName) {
 
        return teacherRepository.getTeacherByNameContaining(teacherName)
@@ -182,6 +194,7 @@ public class TeacherService {
                 .collect(Collectors.toList());
     }
 
+    //delete
 
     public ResponseMessage<?> deleteTeacher(Long id) {
         teacherRepository.findById(id).orElseThrow(()->{
@@ -198,6 +211,7 @@ public class TeacherService {
     }
 
 
+    //GetTeacherById
     public ResponseMessage<TeacherResponse> getSavedTeacherById(Long id) {
 
         Teacher teacher =  teacherRepository.findById(id)
@@ -212,6 +226,7 @@ public class TeacherService {
     }
 
 
+    //getAllTeacherWithPage
     public Page<TeacherResponse> search(int page, int size, String sort, String type) {
 
         Pageable pageable = PageRequest.of(page,size, Sort.by(sort).ascending());
@@ -240,8 +255,10 @@ public class TeacherService {
         }
         //Teacher in mevcut ders programina
        Set<LessonProgram> existLessonProgram = teacher.getLessonsProgramList();
+        CheckSameLessonProgram.checkLessonPrograms(existLessonProgram,lessonPrograms);
 
-        //TODO eklenecek olan LessonProgram mevcuttaki LessonProgram var mi kntrolu
+        // TODO eklenecek olan LessonProgram mevcuttaki LessonProgram var mi kntrolu
+
         existLessonProgram.addAll(lessonPrograms);
         teacher.setLessonsProgramList(existLessonProgram);
         Teacher savedTeacher= teacherRepository.save(teacher);

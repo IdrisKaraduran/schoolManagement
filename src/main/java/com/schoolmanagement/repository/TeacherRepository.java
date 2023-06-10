@@ -17,6 +17,7 @@ public interface TeacherRepository extends JpaRepository<Teacher,Long> {
     Teacher findByUsernameEquals(String username);
 
     boolean existsByEmail(String email);
+    //("select t from teacher t where t.name like concat('%',?1,'%')")
 
     List<Teacher> getTeacherByNameContaining(String teacherName);
 
