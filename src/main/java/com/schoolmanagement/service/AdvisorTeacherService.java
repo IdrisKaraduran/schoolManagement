@@ -32,7 +32,7 @@ public class AdvisorTeacherService {
       AdvisorTeacher advisorTeacher= advisorTeaacherRepository.findById(id).orElseThrow(()->
                 new ResourceNotFoundException(Messages.NOT_FOUND_USER_MESSAGE));
 
-        advisorTeaacherRepository.deleteById(advisorTeacher.getId());
+        advisorTeaacherRepository.deleteById(advisorTeacher.getId());//Burada id de yazabilirim
 
         return ResponseMessage.<AdvisorTeacher>builder()
                 .message("Advisor Teacher Deleted Successfully")
@@ -99,6 +99,7 @@ public class AdvisorTeacherService {
            }
        }else {
            advisorTeaacherRepository.save(advisorTeacherBuilder.build());
+           //TODO zaten advisor Teacher degilse bu kod calisacak
 
        }
 
@@ -106,25 +107,10 @@ public class AdvisorTeacherService {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    //StudentService icin gerekli method
+    public Optional<AdvisorTeacher> getAdvisorTeacherById(Long id) {
+        return  advisorTeaacherRepository.findById(id);
+    }
 
 
 }

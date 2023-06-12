@@ -14,6 +14,7 @@ public class Messages {
     public static final String NOT_FOUND_USER2_MESSAGE = "Error: User not found with id %s" ;
 
     public static final String EDUCATION_START_DATE_IS_EARLIER_THAN_LAST_REGISTRATION_DATE = "Error : The start date cannot be earlier than the start date";
+
     public static final String EDUCATION_END_DATE_IS_EARLIER_THAN_LAST_START_DATE = "Error : The END date cannot be earlier than the start date";
 
     public static final String EDUCATION_TERM_IS_ALREADY_EXISTS_BY_TERM_AND_YEAR_MESSAGE ="Error:Education Term with Term And Year already exist";
@@ -26,13 +27,19 @@ public class Messages {
 
     public static final String NOT_FOUND_LESSON_IN_LIST ="Error:Lesson not found IN LIST ";
 
-
     public static final String TIME_NOT_VALID_MESSAGE ="Error: iNCORRECT TIME ";
-
 
     public static final String LESSON_PROGRAM_NOT_FOUND_MESSAGE ="Error: Lesson program not found ";
 
     public static final String LESSON_PROGRAM_EXIST_MESSAGE ="Error: Course schedule can not be selected for the same hour and date";
+
+    public static final String NOT_FOUND_ADVISOR_MESSAGE ="Error: Advisor Teacher with id %s not found ";
+
+
+
+
+
+
 
 
 }
