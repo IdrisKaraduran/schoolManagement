@@ -36,6 +36,9 @@ public class LessonProgramService {
     private final EducationTermService educationTermService;
     private final LessonProgramDto lessonProgramDto;
     private final LessonProgramRepository lessonProgramRepository;
+    private final StudentService studentService;
+
+
     public ResponseMessage<LessonProgramResponse> save(
             LessonProgramRequest request) {
 
@@ -180,8 +183,10 @@ public class LessonProgramService {
                 .stopTime(lessonProgram.getStopTime())
                 .lessonProgramId(lessonProgram.getId())
                 .lessonName(lessonProgram.getLesson())
-
-                //TODO Teacher ve Student yazilinca buraya ekleme yapilacak
+//                .students(lessonProgram.getStudents().stream()
+//                        .map()//TODO
+//                        .collect(Collectors.toSet()))
+//
                 .build();
     }
 

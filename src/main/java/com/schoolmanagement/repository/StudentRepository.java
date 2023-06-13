@@ -1,8 +1,12 @@
 package com.schoolmanagement.repository;
 
 import com.schoolmanagement.entity.concretes.Student;
+import com.schoolmanagement.payload.Response.StudentResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
 
@@ -22,4 +26,13 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query(value = "Select max(s.studentNumber) from Student s")
     int getMaxStudentNumber();
+
+    List<Student> getStudentByNameContaining(String studentName);
+
+    Optional<Student> findByUsername(String username);
+
+
+    @Query(value = "select s from Student s where s.advisorTeacher.teacher.username =:username")
+    //@Query(value ="select s from Student s Join s.advisorTeacher at Join at.teacher t Where t.username = username")
+    List<Student> getStudentByAdvisorTeacher_Username(String username);
 }

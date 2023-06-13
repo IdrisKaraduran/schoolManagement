@@ -29,7 +29,7 @@ public class LessonProgramResponse {
 
     private Set<TeacherResponse> teachers;
 
-    //Todo student yazilinca eklemeler yapilacak
+    private Set<StudentResponse> students;
 
 
 

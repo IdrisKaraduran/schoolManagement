@@ -1,21 +1,31 @@
 package com.schoolmanagement.service;
 
 import com.schoolmanagement.entity.concretes.AdvisorTeacher;
+import com.schoolmanagement.entity.concretes.LessonProgram;
 import com.schoolmanagement.entity.concretes.Student;
 import com.schoolmanagement.entity.enums.RoleType;
 import com.schoolmanagement.exception.ResourceNotFoundException;
 import com.schoolmanagement.payload.Response.ResponseMessage;
 import com.schoolmanagement.payload.Response.StudentResponse;
+import com.schoolmanagement.payload.request.ChooseLessonProgramWithId;
 import com.schoolmanagement.payload.request.StudentRequest;
 import com.schoolmanagement.repository.StudentRepository;
+import com.schoolmanagement.utils.CheckSameLessonProgram;
 import com.schoolmanagement.utils.FieldControl;
 import com.schoolmanagement.utils.Messages;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +37,7 @@ public class StudentService {
     private final FieldControl fieldControl;
     private final UserRoleService userRoleService;
     private final PasswordEncoder passwordEncoder;
+    private final LessonProgramService lessonProgramService;
 
     //Save Methodu
     public ResponseMessage<StudentResponse> save(StudentRequest studentRequest) {
@@ -126,7 +137,8 @@ public class StudentService {
     }
 
 
-    public ResponseMessage<StudentResponse> updateStudent(Long userId, StudentRequest studentRequest) {
+    public ResponseMessage<StudentResponse> updateStudent(Long userId,
+                  StudentRequest studentRequest) {
 
         // Student var mi?
        Student student = studentRepository.findById(userId).orElseThrow(()->
@@ -135,10 +147,13 @@ public class StudentService {
      AdvisorTeacher advisorTeacher = advisorTeacherService.getAdvisorTeacherById(studentRequest.getAdvisorTeacherId())
                 .orElseThrow(()->new ResourceNotFoundException(String.format(Messages.NOT_FOUND_ADVISOR_MESSAGE, studentRequest.getAdvisorTeacherId())));
          //Dublicate Kontrolu
+        //Gelen veri ile onceki veri ayni mi diye kontrol et
         fieldControl.checkDuplicate(studentRequest.getUsername(),studentRequest.getSsn(),
                 studentRequest.getPhoneNumber(),studentRequest.getEmail());
         //DTO ->POJO
         Student updatedStudent = createUpdatedStudent(studentRequest,userId);
+        //Db ye gidecegi icin pojo ya ceviriyoruz.
+
        //password encode
         updatedStudent.setPassword(passwordEncoder.encode(studentRequest.getPassword()));
 
@@ -177,6 +192,109 @@ public class StudentService {
                 .build();
 
     }
+
+
+    public ResponseMessage<?> deleteStudent(Long studentId) {
+        //id var mi kontrolu
+      Student student =  studentRepository.findById(studentId).orElseThrow(()->
+                new ResourceNotFoundException(Messages.NOT_FOUND_USER_MESSAGE));
+    //studentRepository.delete(student);Boylede silebilirim
+      studentRepository.deleteById(studentId);
+
+      return ResponseMessage.builder()
+              .message("deleted student successfully")
+              .httpStatus(HttpStatus.OK)
+              .build();
+    }
+
+
+    public List<StudentResponse> getStudentByName(String studentName) {
+
+        return studentRepository.getStudentByNameContaining(studentName)
+                .stream()
+                .map(this::createStudentResponse)
+                .collect(Collectors.toList());
+
+    }
+
+
+    public Student getStudentByIdForResponse(Long id) {
+        return studentRepository.findById(id).orElseThrow(()->
+                new ResourceNotFoundException(Messages.NOT_FOUND_USER_MESSAGE));
+    }
+
+
+    public Page<StudentResponse> search(int page, int size, String sort, String type) {
+
+        // Pageable pageable = PageRequest.of(page,size, Sort.by(type,sort));
+        Pageable pageable = PageRequest.of(page,size, Sort.by(sort).ascending());
+
+        if(Objects.equals(type,"desc")){
+            pageable=PageRequest.of(page,size,Sort.by(sort).descending());
+        }
+        return studentRepository.findAll(pageable).map(this::createStudentResponse);
+
+    }
+
+
+    public ResponseMessage<StudentResponse> chooseLesson(String username,
+                                  ChooseLessonProgramWithId chooseLessonProgramRequest)
+    {
+      //Student ve lesson program kontrolu
+      Student student = studentRepository.findByUsername(username).orElseThrow(()->
+              new ResourceNotFoundException(Messages.NOT_FOUND_USER_MESSAGE));
+
+     Set<LessonProgram> lessonPrograms = lessonProgramService.getLessonProgramById(chooseLessonProgramRequest.getLessonProgramId());
+
+        if(lessonPrograms.size()==0){
+            throw new ResourceNotFoundException(Messages.LESSON_PROGRAM_NOT_FOUND_MESSAGE);
+        }
+        //ogrencimizin mevcut lesson programlari gertiriyoruz
+       Set<LessonProgram> studentLessonPrograms = student.getLessonsProgramList();
+
+        //Lesson icin duplicate kontrolu
+        CheckSameLessonProgram.checkLessonPrograms(studentLessonPrograms,lessonPrograms);
+        studentLessonPrograms.addAll(lessonPrograms);
+        student.setLessonsProgramList(studentLessonPrograms);
+        Student savedStudent =studentRepository.save(student);
+        return ResponseMessage.<StudentResponse>builder()
+                .message("Lessons added to student")
+                .object(createStudentResponse(savedStudent))
+                .httpStatus(HttpStatus.OK)
+                .build();
+
+
+
+
+
+    }
+
+
+    public List<StudentResponse> getAllStudentByTeacher_Username(String username) {
+
+        return studentRepository.getStudentByAdvisorTeacher_Username(username)
+                .stream()
+                .map(this::createStudentResponse)
+                .collect(Collectors.toList());
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
