@@ -14,4 +14,8 @@ public interface LessonRepository extends JpaRepository<Lesson,Long> {
 
     @Query(value = "Select l from Lesson l where l.lessonId IN :lessons")
     Set<Lesson> getLessonByLessonIdList(Set<Long> lessons);
+
+    boolean existsByLessonIdEquals(Long lessonId);
+
+    Lesson findByLessonIdEquals(Long lessonId);
 }

@@ -271,6 +271,21 @@ public class TeacherService {
     }
 
 
+    public Teacher getTeacherByUsername(String username) {
+        if(!teacherRepository.existsByUsername(username)){
+            throw new ResourceNotFoundException(Messages.NOT_FOUND_USER_MESSAGE);
+        }
+        return teacherRepository.getTeacherByUsername(username);
+    }
+
+
+
+
+
+
+
+
+
 
 
 

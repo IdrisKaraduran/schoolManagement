@@ -12,6 +12,7 @@ import com.schoolmanagement.payload.Response.TeacherResponse;
 import com.schoolmanagement.payload.dto.LessonProgramDto;
 import com.schoolmanagement.payload.request.LessonProgramRequest;
 import com.schoolmanagement.repository.LessonProgramRepository;
+import com.schoolmanagement.utils.CreateResponseObjectForService;
 import com.schoolmanagement.utils.Messages;
 import com.schoolmanagement.utils.TimeControl;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class LessonProgramService {
     private final LessonProgramDto lessonProgramDto;
     private final LessonProgramRepository lessonProgramRepository;
     private final StudentService studentService;
+    private final CreateResponseObjectForService createResponseObjectForService;
 
 
     public ResponseMessage<LessonProgramResponse> save(
@@ -105,7 +107,10 @@ public class LessonProgramService {
                         .stream()
                         .map(this::createTeacher)
                         .collect(Collectors.toSet()))
-                //TODO Teacher ve Student yazilinca buraya ekleme yapilacak
+                .students(lessonProgram.getStudents()
+                        .stream()
+                        .map(createResponseObjectForService::createStudentResponse)
+                        .collect(Collectors.toSet()))
                 .build();
     }
     public TeacherResponse createTeacher(Teacher teacher){
@@ -183,10 +188,9 @@ public class LessonProgramService {
                 .stopTime(lessonProgram.getStopTime())
                 .lessonProgramId(lessonProgram.getId())
                 .lessonName(lessonProgram.getLesson())
-//                .students(lessonProgram.getStudents().stream()
-//                        .map()//TODO
-//                        .collect(Collectors.toSet()))
-//
+                .students(lessonProgram.getStudents().stream()
+                        .map(createResponseObjectForService::createStudentResponse)
+                        .collect(Collectors.toSet()))
                 .build();
     }
 

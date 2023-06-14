@@ -116,9 +116,14 @@ public class LessonService {
     }
 
 
+    //StudentInfoSErvice icin yazildi.
+    public Lesson getLessonById(Long lessonId) {
 
-
-
+        if(!lessonRepository.existsByLessonIdEquals(lessonId)){
+            throw new ResourceNotFoundException(Messages.NOT_FOUND_LESSON_MESSAGE);
+        }
+        return lessonRepository.findByLessonIdEquals(lessonId);
+    }
 
 
 
