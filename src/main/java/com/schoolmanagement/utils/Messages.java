@@ -37,6 +37,7 @@ public class Messages {
 
     public static final String STUDENT_INFO_NOT_FOUND ="Error: Student Info mit Info %d not found ";
 
+    public static final String STUDENT_INFO_NOT_FOUND_BY_STUDENT_ID ="Error: Student Info mit STUDENT ID o %d not found ";
 
 
 
