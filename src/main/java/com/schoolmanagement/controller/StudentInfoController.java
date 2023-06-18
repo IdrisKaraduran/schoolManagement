@@ -47,12 +47,13 @@ public class StudentInfoController {
     //update islemi
     @PreAuthorize("hasAnyAuthority('TEACHER','ADMIN')")
     @PutMapping("/update/{studentInfoId}")
-    public ResponseMessage<StudentInfoResponse> update(@RequestBody @Valid UpdateStudentInfoRequest studentInfoRequest,
-                                                       @PathVariable Long studentInfoId){
+    public ResponseMessage<StudentInfoResponse> update(
+            @RequestBody @Valid UpdateStudentInfoRequest studentInfoRequest,
+             @PathVariable Long studentInfoId){
         return studentInfoService.update(studentInfoRequest,studentInfoId);
 
     }
-
+//GETaLLForAdmin
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @GetMapping("/getAllForAdmin")
     public ResponseEntity<Page<StudentInfoResponse>> getAll(
@@ -74,14 +75,17 @@ public class StudentInfoController {
     @PreAuthorize("hasAnyAuthority('TEACHER')")
     @GetMapping("/getAllForTeacher")
     public ResponseEntity<Page<StudentInfoResponse>> getAllForTeacher(
-            HttpServletRequest httpServletRequest,
+            HttpServletRequest httpServletRequest,//Burda hangi ogretmen ise onu buluyoruz
             @RequestParam(value = "page") int page,
             @RequestParam(value = "size") int size
     ){
-        Pageable pageable = PageRequest.of(page,size, Sort.by("id").descending()) ;
-        String username = (String) httpServletRequest.getAttribute("username");
+        Pageable pageable = PageRequest.
+                of(page,size, Sort.by("id").descending()) ;
+        String username = (String) httpServletRequest.
+                getAttribute("username");
 
-       Page<StudentInfoResponse> studentInfoResponse = studentInfoService.getAllTeacher(pageable,username);
+       Page<StudentInfoResponse> studentInfoResponse = studentInfoService
+               .getAllTeacher(pageable,username);
 
       // return ResponseEntity.ok(studentInfoResponse); Buda boyle yazilabilir.
         return new ResponseEntity<>(studentInfoResponse,HttpStatus.OK);
@@ -103,11 +107,13 @@ public class StudentInfoController {
 
     }
 
+    //getStudentInfoByStudentId()
 
     @PreAuthorize("hasAnyAuthority('TEACHER','MANAGER','ASSISTANTMANAGER','ADMIN')")
     @GetMapping("/getByStudentId/{studentId}")
     public ResponseEntity<List<StudentInfoResponse>> getStudentId(@PathVariable Long studentId){
-        List<StudentInfoResponse> studentInfoResponse = studentInfoService.getStudentInfoByStudentId(studentId);
+        List<StudentInfoResponse> studentInfoResponse = studentInfoService.
+                getStudentInfoByStudentId(studentId);
 
         return ResponseEntity.ok(studentInfoResponse);
     }
@@ -119,10 +125,25 @@ public class StudentInfoController {
     @GetMapping("/get/{id}")
     public ResponseEntity<StudentInfoResponse> get(@PathVariable Long id){
 
-    StudentInfoResponse studentInfoResponse = studentInfoService.findStudentInfoById(id);
+    StudentInfoResponse studentInfoResponse = studentInfoService
+            .findStudentInfoById(id);
 
     return ResponseEntity.ok(studentInfoResponse);
     }
+
+    //getAllWithPage
+    @PreAuthorize("hasAnyAuthority('MANAGER','ASSISTANTMANAGER','ADMIN')")
+    @GetMapping("/search")
+    public Page<StudentInfoResponse> search(
+            @RequestParam(value = "page",defaultValue = "0") int page,
+            @RequestParam(value = "size",defaultValue = "10") int size,
+            @RequestParam(value = "sort",defaultValue = "name") String sort,
+            @RequestParam(value = "type",defaultValue = "desc") String type
+
+    ){
+        return studentInfoService.search(page,size,sort,type);
+    }
+
 
 
 

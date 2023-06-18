@@ -113,4 +113,9 @@ public class AdvisorTeacherService {
     }
 
 
+    public Optional<AdvisorTeacher> getAdvisorTeacherByUsername(String username) {
+
+        return advisorTeaacherRepository.findByTeacher_UsernameEquals(username);
+
+    }
 }

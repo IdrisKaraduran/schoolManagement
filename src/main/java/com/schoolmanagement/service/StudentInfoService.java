@@ -14,11 +14,14 @@ import com.schoolmanagement.utils.Messages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -174,15 +177,18 @@ public class StudentInfoService {
 
 
     //Update
-    public ResponseMessage<StudentInfoResponse> update(UpdateStudentInfoRequest studentInfoRequest, Long studentInfoId) {
+    public ResponseMessage<StudentInfoResponse> update(
+            UpdateStudentInfoRequest studentInfoRequest, Long studentInfoId) {
         //gelmezse exception gelmez cunku diger method larda handle ettik.
         //Parametreden gelen  datalar ile nesneler elde ediliyor
        Lesson lesson = lessonService.getLessonById(studentInfoRequest.getLessonId());
+      //TODO YENI OGRENCININ MATEMETIK
        StudentInfo getStudentInfo= getStudentInfoById(studentInfoId);
        EducationTerm educationTerm = educationTermService.getById(studentInfoRequest.getEducationTermId());
 
        //DersNot ortalamasi hesaplaniyor.
-        Double noteAverage = calculateExamAverage(studentInfoRequest.getMidtermExam(),studentInfoRequest.getFinalExam());
+        Double noteAverage = calculateExamAverage(studentInfoRequest.
+                getMidtermExam(),studentInfoRequest.getFinalExam());
        //Alfabetik Not belirlenecek
         Note note = checkLetterGrade(noteAverage);
         //DTO -->pojo
@@ -244,7 +250,6 @@ public class StudentInfoService {
     //allttaki metodu(student)  ya yoksa kontrolunu buraya ekleyiniz.Ancak ana kodu ekle
     public Page<StudentInfoResponse> getAllTeacher(Pageable pageable, String username) {
         return studentInfoRepository.findByTeacherId_UsernameEquals(username,pageable).map(this::createResponse);
-
     }
 
     public Page<StudentInfoResponse> getAllStudentInfoByStudent(String username, Pageable pageable) {
@@ -282,9 +287,20 @@ public class StudentInfoService {
         return createResponse(studentInfoRepository.findByIdEquals(id));
 
     }
+    //getAllWithPage odev
+    public Page<StudentInfoResponse> search(int page, int size, String sort, String type) {
+        // Pageable pageable = PageRequest.of(page,size, Sort.by(type,sort));
+        Pageable pageable = PageRequest.of(page,size, Sort.by(sort).ascending());
+
+        if(Objects.equals(type,"desc")){
+            pageable=PageRequest.of(page,size,Sort.by(sort).descending());
+        }
+
+        return studentInfoRepository.findAll(pageable).map(this::createResponse);
+    }
 
 
-   //getAllWithPage odev
+
 
 
 
