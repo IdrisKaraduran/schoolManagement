@@ -9,6 +9,7 @@ import com.schoolmanagement.exception.ResourceNotFoundException;
 import com.schoolmanagement.payload.Response.MeetResponse;
 import com.schoolmanagement.payload.Response.ResponseMessage;
 import com.schoolmanagement.payload.request.MeetRequestWithoutId;
+import com.schoolmanagement.payload.request.UpdateMeetRequest;
 import com.schoolmanagement.repository.MeetRepository;
 import com.schoolmanagement.repository.StudentRepository;
 import com.schoolmanagement.utils.Messages;
@@ -16,7 +17,9 @@ import com.schoolmanagement.utils.TimeControl;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.bridge.Message;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -144,6 +147,108 @@ public class MeetService {
                .map(this::createMeetResponse);
 
     }
+
+
+    public List<MeetResponse> getAllMeetByAdvisorAsList(String username) {
+        AdvisorTeacher advisorTeacher = advisorTeacherService.getAdvisorTeacherByUsername(username).orElseThrow(()->
+                new ResourceNotFoundException(String.format(Messages.NOT_FOUND_ADVISOR_MESSAGE_WITH_USERNAME,username)));
+
+        return meetRepository.getByAdvisorTeacher_IdEquals(advisorTeacher.getId())
+                .stream().map(this::createMeetResponse)
+                .collect(Collectors.toList());
+
+    }
+
+    public ResponseMessage<?> delete(Long meetId) {
+
+       Meet meet = meetRepository.findById(meetId).orElseThrow(()->
+                new ResourceNotFoundException(String.format(Messages.MEET_NOT_FOUND_MESSAGE,meetId)));
+
+        meetRepository.deleteById(meetId);
+
+        return ResponseMessage.builder()
+                .message("Delete Meet Successfully")
+                .httpStatus(HttpStatus.OK)
+                .build();
+
+    }
+
+    //UPDATE
+    public ResponseMessage<MeetResponse> update(UpdateMeetRequest meetRequest, Long meetId) {
+
+        //save ve update kontrol kisimlari ortak methodlar uzerinden cagrilacak
+
+        Meet getMeet = meetRepository.findById(meetId).orElseThrow(()->
+                new ResourceNotFoundException(String.format(Messages.MEET_NOT_FOUND_MESSAGE,meetId)));
+
+        //!!!Time controlleri yapmam lazim
+        if(TimeControl.check(meetRequest.getStartTime(),meetRequest.getStopTime())){
+            throw new BadRequestException(Messages.TIME_NOT_VALID_MESSAGE);
+        }
+        //HER OGRENCI ICIN MEET CONFLICT KONTROLU
+        for (Long studentId : meetRequest.getStudentIds()) {
+            checkMeetConflict(studentId,meetRequest.getDate(),meetRequest.getStartTime(),meetRequest.getStopTime());
+        }
+
+        List<Student> students = studentService.getStudentByIds(meetRequest.getStudentIds());
+
+        //DTO -POJO
+       Meet meet = createUpdatedMeet(meetRequest,meetId);
+       meet.setStudentList(students);
+       meet.setAdvisorTeacher(getMeet.getAdvisorTeacher());
+
+       //db ye kayit
+       Meet updatedMeet = meetRepository.save(meet);
+
+       return ResponseMessage.<MeetResponse>builder()
+               .message("Meet Updated Succesully")
+               .httpStatus(HttpStatus.OK)
+               .object(createMeetResponse(updatedMeet))
+               .build();
+
+    }
+
+    private Meet createUpdatedMeet(UpdateMeetRequest updateMeetRequest,Long id){
+        return Meet.builder()
+                .id(id)
+                .startTime(updateMeetRequest.getStartTime())
+                .stopTime(updateMeetRequest.getStopTime())
+                .date(updateMeetRequest.getDate())
+                .description(updateMeetRequest.getDescription())
+                .build();
+
+    }
+
+
+    public List<MeetResponse> getAllMeetByStudentByUsername(String username) {
+
+     Student student = studentService.getStudentByUsernameForOptional(username).orElseThrow(()->
+                new ResourceNotFoundException(Messages.NOT_FOUND_USER_MESSAGE));
+
+     return meetRepository.findByStudentList_IdEquals(student.getId())
+             .stream()
+             .map(this::createMeetResponse)
+             .collect(Collectors.toList());
+
+    }
+
+
+    public Page<MeetResponse> search(int page, int size) {
+      Pageable pageable = PageRequest.of(page,size, Sort.by("id").descending());
+      return meetRepository.findAll(pageable).map(this::createMeetResponse);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

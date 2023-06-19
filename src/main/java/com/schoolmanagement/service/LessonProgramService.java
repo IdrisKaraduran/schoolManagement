@@ -102,7 +102,7 @@ public class LessonProgramService {
                 .startTime(lessonProgram.getStartTime())
                 .stopTime(lessonProgram.getStopTime())
                 .lessonProgramId(lessonProgram.getId())
-                .lessonName(lessonProgram.getLesson())
+               // .lessonName(lessonProgram.getLesson())
                 .teachers(lessonProgram.getTeachers()
                         .stream()
                         .map(this::createTeacher)
