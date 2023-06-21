@@ -1,12 +1,12 @@
 package com.schoolmanagement.controller;
 
-import com.schoolmanagement.entity.concretes.Teacher;
-import com.schoolmanagement.payload.Response.ResponseMessage;
-import com.schoolmanagement.payload.Response.TeacherResponse;
 import com.schoolmanagement.payload.request.ChooseLessonTeacherRequest;
 import com.schoolmanagement.payload.request.TeacherRequest;
+import com.schoolmanagement.payload.response.ResponseMessage;
+import com.schoolmanagement.payload.response.TeacherResponse;
 import com.schoolmanagement.service.TeacherService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.internal.constraintvalidators.bv.time.futureorpresent.FutureOrPresentValidatorForZonedDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -14,89 +14,84 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@RestController//Ozellestirilmis controller
+@RestController
 @RequestMapping("teachers")
 @RequiredArgsConstructor
 public class TeacherController {
+
     private final TeacherService teacherService;
 
-
-    //Not save methodu
+    // Not: Save() **********************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
-    @PostMapping("/save")
-    public ResponseMessage<TeacherResponse> save(@Valid @RequestBody TeacherRequest teacher){
+    @PostMapping("/save")  // http://localhost:8080/teachers/save
+    public ResponseMessage<TeacherResponse> save(@RequestBody @Valid TeacherRequest teacher) {
+
         return teacherService.save(teacher);
     }
 
-    //getAllTeacher
+    // Not: getAll() **********************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
-    @GetMapping("/getAll")
+    @GetMapping("/getAll") // http://localhost:8080/teachers/getAll
     public List<TeacherResponse> getAllTeacher(){
-
         return teacherService.getAllTeacher();
     }
 
-
-    //Update Teacher
+    // Not: updateTeacherById() ************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
-    @PutMapping("/update/{userId}")
-    public ResponseMessage<TeacherResponse> updateTeacher(@RequestBody @Valid TeacherRequest request ,@PathVariable Long userId){
-        return teacherService.updateTeacher(request,userId)
-;    }
+    @PutMapping("/update/{userId}")  // http://localhost:8080/teachers/update/1
+    public ResponseMessage<TeacherResponse> updateTeacher(@RequestBody @Valid TeacherRequest teacher,
+                                                          @PathVariable Long userId){
+
+        return teacherService.updateTeacher(teacher, userId);
+    }
 
 
-    //getTeacherByName
+    // Not: getTeacherByName() **************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
     @GetMapping("/getTeacherByName")
     public List<TeacherResponse> getTeacherByName(@RequestParam(name = "name") String teacherName){
-
         return teacherService.getTeacherByName(teacherName);
+
     }
 
+
+    // Not: deleteTeacher() *****************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
     @DeleteMapping("/delete/{id}")
-    public ResponseMessage<?> deleteTeacher(@PathVariable Long id){
-        return teacherService.deleteTeacher(id);
+    public ResponseMessage<?> deleteTeacher(@PathVariable Long id) {
+        return  teacherService.deleteTeacher(id);
     }
 
-    //getTeaacherById
+
+
+    // Not: getTeacherById() ****************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
     @GetMapping("/getSavedTeacherById/{id}")
     public ResponseMessage<TeacherResponse> getSavedTeacherById(@PathVariable Long id){
         return teacherService.getSavedTeacherById(id);
     }
 
-    //getAllWithPage
+
+
+    // Not: getAllWithPage() ****************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
-    @GetMapping("/seaarch")
+    @GetMapping("/search")
     public Page<TeacherResponse> search(
-            @RequestParam(value = "page",defaultValue = "0") int page,
-            @RequestParam(value = "size",defaultValue = "10") int size,
-            @RequestParam(value = "sort",defaultValue = "name") String sort,
-            @RequestParam(value = "type",defaultValue = "desc") String type
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "size") int size,
+            @RequestParam(value = "sort") String sort,
+            @RequestParam(value = "type") String type
     ){
-        return teacherService.search(page,size,sort,type);
+        return teacherService.search(page, size,sort,type);
     }
 
-    //addLessonProgramToTeacherLessonsProgram
+
+    // Not: addLessonProgramToTeachersLessonsProgram() **********************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
     @PostMapping("/chooseLesson")
     public ResponseMessage<TeacherResponse> chooseLesson(@RequestBody @Valid ChooseLessonTeacherRequest chooseLessonRequest){
-
         return teacherService.chooseLesson(chooseLessonRequest);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -17,18 +16,20 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class EducationTermRequest implements Serializable {
-    @NotNull(message = "Education muss not be empty")
+
+
+    @NotNull(message = "Education Term must not be empty")
     private Term term;
-    @NotNull(message = "Start Date musst not be empty")
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
+
+    @NotNull(message ="Start Date must not be empty")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate startDate;
-    @NotNull(message = "End Date musst not be empty")
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
+
+    @NotNull(message ="End Date must not be empty")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate endDate;
-    @NotNull(message = "Last Registration Date musst not be empty")
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
+
+    @NotNull(message ="Last Registration Date must not be empty")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate lastRegistrationDate;
-
-
-
 }

@@ -19,11 +19,16 @@ import java.util.Objects;
 public class UserDetailsImpl implements UserDetails {
 
     private Long id;
+
     private String username;
+
     private String name;
+
     private Boolean isAdvisor;
-    @JsonIgnore//Cleint a gitmesini onluyor.
+
+    @JsonIgnore
     private String password;
+
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserDetailsImpl(Long id, String username, String name, Boolean isAdvisor, String password, String role) {
@@ -32,11 +37,9 @@ public class UserDetailsImpl implements UserDetails {
         this.name = name;
         this.isAdvisor = isAdvisor;
         this.password = password;
-
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         grantedAuthorities.add(new SimpleGrantedAuthority(role));
-        this.authorities =grantedAuthorities;
-        //Bu const. user lari userdetails e cevirecek
+        this.authorities = grantedAuthorities;
     }
 
     @Override
@@ -74,20 +77,13 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
-    public boolean equals(Object o) {//iki farkli user acaba ayni kisi mi diye kontrol ediyoruz.
-
-        if (this == o)//kendisiyle karsilastiriliyor.
-            return true;
-        if (o == null || getClass() != o.getClass())
+    public boolean equals(Object o) {
+        if(this == o) // kensisi ile karsilastiriliyor
+            return true ;
+        if( o== null || getClass() != o.getClass())
             return false;
-
         UserDetailsImpl user = (UserDetailsImpl) o;
-          return Objects.equals(id, user.id);//id ile kiyaslama
+        return Objects.equals(id, user.id); // id ile kiyaslama
     }
-
-
-
-
-
 
 }

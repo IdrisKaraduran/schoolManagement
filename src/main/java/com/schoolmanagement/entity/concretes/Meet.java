@@ -49,14 +49,3 @@ public class Meet implements Serializable {
     private List<Student> studentList;
 
 }
-
-
-
-
-
-
-
-
-
-
-

@@ -22,21 +22,19 @@ public class UserRoleService {
         return userRole.orElse(null);
     }
 
-    //Runner tarafi icin gerekli method cunku runnerdaki if in icini kontrol ederken bu methodu kullaniyoruz.Burdan hicbir sey gelmezse biz orda kaydediyoruz.
+    // Runner tarafi icin gerekli method
     public List<UserRole> getAllUserRole() {
         return userRoleRepository.findAll();
     }
 
-    //
+    // Runner tarafi icin gerekli method
     public UserRole save(RoleType roleType) {
 
-        if(userRoleRepository.existsByERoleEquals(roleType)){
-            throw  new ConflictException("This Role is already registered");
+        if(userRoleRepository.existsByERoleEquals(roleType)) {
+            throw new ConflictException("This role is already registered");
         }
-       UserRole userRole = UserRole.builder().roleType(roleType).build();
-       return  userRoleRepository.save(userRole);
+
+        UserRole userRole = UserRole.builder().roleType(roleType).build();
+        return userRoleRepository.save(userRole);
     }
-
-
-
 }

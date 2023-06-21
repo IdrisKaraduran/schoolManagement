@@ -22,7 +22,7 @@ import java.util.Set;
 public class LessonProgramRequest {
 
     @NotNull(message="Please enter day")
-    private Day day;
+    private Day day;  //
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "US")
     @NotNull(message="Please enter start time")

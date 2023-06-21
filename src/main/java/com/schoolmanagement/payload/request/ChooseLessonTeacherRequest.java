@@ -10,15 +10,15 @@ import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder(toBuilder = true)
 public class ChooseLessonTeacherRequest {
-    @Size(min = 1,message = "Lesson musst not be empty")
+
     @NotNull
+    @Size(min=1, message = "Lessons must not be empty")
     private Set<Long> lessonProgramId;
+
     @NotNull(message = "Please select teacher")
     private Long teacherId;
-
-
 }

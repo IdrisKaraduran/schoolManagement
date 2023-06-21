@@ -10,9 +10,5 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @NoArgsConstructor
 @SuperBuilder
-
 public class DeanRequest extends BaseUserRequest {
-
-
-
 }

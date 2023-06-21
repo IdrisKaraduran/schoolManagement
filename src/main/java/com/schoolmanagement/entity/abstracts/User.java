@@ -13,22 +13,26 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-@MappedSuperclass//Db de User tablosu olusmadan bu sinifin anac sinif olarak kullanilmasini sagliyor.
+@MappedSuperclass // Db de user tablosu olusmadan bu sinifin anac sinif olarak kullanilmasini sagliyor
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder//Bir admin ayni zamanda bir userdir. Alt siniflarin user sinifinin ozelliklerini kullanabilmesine izin verir.
+@SuperBuilder // Alt siniflarin USer sinifinin builder ozelliklerini kullanabilmesine izin verir
+// !!! @SuperBuilder ile @Builder arasindaki temel fark :https://www.baeldung.com/lombok-builder-inheritance
+// !!! @SuperBuilder in duzgun calismasi icin hem parent a hem de childa @SuperBuilder eklenmeli
 public abstract class User implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String username;
 
     @Column(unique = true)
     private String ssn;
 
-    private  String name;
+    private String name;
 
     private String surname;
 
@@ -36,15 +40,22 @@ public abstract class User implements Serializable {
     private LocalDate birthDay;
 
     private String birthPlace;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)//Hassas veri odugu icin okuma islemlerine kullanilmasin
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // hassas veri oldugu icin okuma islemlerinde kullanilmasin
     private String password;
+
     @Column(unique = true)
     private String phoneNumber;
+
     @OneToOne
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)//Hassas veri odugu icin okuma islemlerine kullanilmasin
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private UserRole userRole;
 
     private Gender gender;
+
+
+
+
 
 
 

@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.Set;
@@ -20,6 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class LessonProgram implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,11 +27,12 @@ public class LessonProgram implements Serializable {
     @Enumerated(EnumType.STRING)
     private Day day;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "HH:mm",timezone = "US")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "US")
     private LocalTime startTime;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "HH:mm",timezone = "US")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "US")
     private LocalTime stopTime;
+
     @ManyToMany
     @JoinTable(
             name = "lesson_program_lesson",
@@ -44,23 +45,22 @@ public class LessonProgram implements Serializable {
     private EducationTerm educationTerm;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @ManyToMany(mappedBy = "lessonsProgramList",fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "lessonsProgramList", fetch = FetchType.EAGER)
     private Set<Teacher> teachers;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @ManyToMany(mappedBy = "lessonsProgramList",fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "lessonsProgramList", fetch = FetchType.EAGER)
     private Set<Student> students;
 
-    //preRemove
     @PreRemove
     private void removeLessonProgramFromStudent(){
         teachers.forEach((t)->{
             t.getLessonsProgramList().remove(this);
         });
+
         students.forEach((s)->{
             s.getLessonsProgramList().remove(this);
         });
     }
-
 
 }

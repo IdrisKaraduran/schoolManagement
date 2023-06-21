@@ -1,4 +1,4 @@
-package com.schoolmanagement.payload.Response.abstracts;
+package com.schoolmanagement.payload.response.abstracts;
 
 import com.schoolmanagement.entity.enums.Gender;
 import lombok.AllArgsConstructor;
@@ -10,11 +10,12 @@ import javax.persistence.MappedSuperclass;
 import java.time.LocalDate;
 
 @Data
-@NoArgsConstructor
-//@MappedSuperclass Bu annotation gereksiz oldugu icin yoruma aldik.
-@SuperBuilder
 @AllArgsConstructor
+@NoArgsConstructor
+@SuperBuilder
+//@MappedSuperclass
 public abstract class BaseUserResponse {
+
     private Long userId;
     private String username;
     private String name;
@@ -24,7 +25,4 @@ public abstract class BaseUserResponse {
     private String birthPlace;
     private String phoneNumber;
     private Gender gender;
-
-
-
 }

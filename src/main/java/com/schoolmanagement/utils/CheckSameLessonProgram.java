@@ -8,66 +8,43 @@ import java.util.Set;
 
 public class CheckSameLessonProgram {
 
-    public static void checkLessonPrograms(Set<LessonProgram> existLessonProgram, Set<LessonProgram> lessonProgramRequest){
+    public static void  checkLessonPrograms(Set<LessonProgram> existLessonProgram, Set<LessonProgram> lessonProgramRequest){
 
-        if(existLessonProgram.isEmpty() && lessonProgramRequest.size()>1){//karsilastirma yapmak icin birden buyuk
-            checkDuplicaticateLessonProgram(lessonProgramRequest);
-        }else {
-            checkDuplicaticateLessonProgram(lessonProgramRequest);
-            checkDuplicateLessonsProgram(existLessonProgram, lessonProgramRequest);
+        if(existLessonProgram.isEmpty() && lessonProgramRequest.size()>1) {
+            checkDuplicateLessonPrograms(lessonProgramRequest);
+        } else {
+            checkDuplicateLessonPrograms(lessonProgramRequest);
+            checkDuplicateLessonPrograms(existLessonProgram,lessonProgramRequest);
         }
 
     }
 
-    private static void checkDuplicaticateLessonProgram(Set<LessonProgram> lessonPrograms) {
+    private static void checkDuplicateLessonPrograms(Set<LessonProgram> lessonPrograms) {
+
         Set<String> uniqueLessonProgramKeys = new HashSet<>();
-        for(LessonProgram lessonProgram : lessonPrograms){
+
+        for (LessonProgram lessonProgram : lessonPrograms ) {
             String lessonProgramKey = lessonProgram.getDay().name() + lessonProgram.getStartTime();
-            if(uniqueLessonProgramKeys.contains(lessonProgramKey)){//contain true veya false doner
-                throw new BadRequestException(Messages.LESSON_PROGRAM_NOT_FOUND_MESSAGE);
+            if(uniqueLessonProgramKeys.contains(lessonProgramKey)){
+                throw  new BadRequestException(Messages.LESSON_PROGRAM_EXIST_MESSAGE);
             }
             uniqueLessonProgramKeys.add(lessonProgramKey);
         }
-
     }
-    private static void checkDuplicateLessonsProgram(Set<LessonProgram> existLessonProgram, Set<LessonProgram> lessonProgramRequest){
-        for(LessonProgram requestLessonProgram : lessonProgramRequest){
+
+    public static void checkDuplicateLessonPrograms(Set<LessonProgram> existLessonProgram, Set<LessonProgram> lessonProgramRequest ){
+
+        for (LessonProgram requestLessonProgram : lessonProgramRequest) {
 
             if(existLessonProgram.stream().anyMatch(lessonProgram ->
                     lessonProgram.getStartTime().equals(requestLessonProgram.getStartTime()) &&
-                    lessonProgram.getDay().name().equals(requestLessonProgram.getDay().name())))
-            {
-                throw new BadRequestException(Messages.LESSON_PROGRAM_NOT_FOUND_MESSAGE);
+                            lessonProgram.getDay().name().equals(requestLessonProgram.getDay().name()))) {
+                throw  new BadRequestException(Messages.LESSON_PROGRAM_EXIST_MESSAGE);
             }
+
         }
+
     }
-    //TODO start Time baska bir Lesson Programin Start Time ve End Time arasinda mi kontrolu eklenecek.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // TODO : startTime baska bir lessonProgramin startTime ve endTime arasindami kontrolu eklebnecek
 }

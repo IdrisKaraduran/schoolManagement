@@ -1,4 +1,4 @@
-package com.schoolmanagement.payload.Response;
+package com.schoolmanagement.payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,12 +14,9 @@ import java.time.LocalDate;
 @Builder(toBuilder = true)
 public class ContactMessageResponse implements Serializable {
 
-    //Db ye gidecek seylere validation yapilir .Db den gelene yapilmaz.Yapilsa bir sey olmaz
-
     private String name;
-    private  String email;
+    private String email;
     private String subject;
     private String message;
     private LocalDate date;
-
 }

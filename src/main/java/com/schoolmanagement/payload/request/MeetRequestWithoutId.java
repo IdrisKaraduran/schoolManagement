@@ -20,13 +20,13 @@ import java.time.LocalTime;
 public class MeetRequestWithoutId {
 
     @NotNull(message = "Please enter description")
-    @Size(min=2, max=250, message = "Description should be at least 2 chars")
+    @Size(min=2, max= 250, message = "Description should be at least 2 chars")
     @Pattern(regexp = "\\A(?!\\s*\\Z).+" ,message="Description must consist of the characters .")
     private String description;
 
     @NotNull(message = "Please enter day")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @Future//Simdiden sonraya islem yapmamizi sagliyor.Yani simdi girdik islem yapiyoruz gecmis bir tarih veremeyiz.
+    @Future
     private LocalDate date;
 
     @NotNull(message = "Please enter start time")
@@ -38,5 +38,5 @@ public class MeetRequestWithoutId {
     private LocalTime stopTime;
 
     @NotNull(message = "Please select students")
-    private Long[] studentIds; // TODO : Set ?//Gorevde array oldugu icin array yazdik.
+    private Long[] studentIds; // TODO : Set ?
 }

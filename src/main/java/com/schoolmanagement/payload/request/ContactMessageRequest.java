@@ -16,20 +16,24 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class ContactMessageRequest implements Serializable {
-    @NotNull(message = "Please Enter Name")
-    @Size(min = 4, max = 16, message = "Your name should be at least 4 chars")
+
+    @NotNull(message = "Please enter name")
+    @Size(min=4, max=16, message = "Your name should be at least 4 chars")
     @Pattern(regexp = "\\A(?!\\s*\\Z).+" ,message="Your message must consist of the characters .") // bosluk olmayacak ve en az 1 karakter olacak
-    private String name;
-    @Email(message = "Please Enter Valid email")
-    @Size(min = 5, max = 20, message = "Your email should be at least 5 chars")
-    @NotNull(message = "Please Enter Your Email")
-    private String email;
-    @NotNull(message = "Please Enter Subject")
-    @Size(min = 4, max = 50, message = "Your name should be at least 4 chars")
-    @Pattern(regexp = "\\A(?!\\s*\\Z).+" ,message="Your message must consist of the characters .") // bosluk olmayacak ve en az 1 karakter olacak
-    private String subject;
-    @NotNull(message = "Please Enter message")
-    @Size(min = 4, max = 50, message = "Your name should be at least 4 chars")
-    @Pattern(regexp = "\\A(?!\\s*\\Z).+" ,message="Your message must consist of the characters .") // bosluk olmayacak ve en az 1 karakter olacak
-    private String message;
+    private String name ;
+
+    @Email(message = "Please enter valid email")
+    @Size(min=5, max=20, message = "Your email should be at least 5 chars")
+    @NotNull(message = "Please enter your email")
+    private String email ;
+
+    @NotNull(message = "Please enter subject")
+    @Size(min=4, max=50, message = "Your subject should be at least 4 chars")
+    @Pattern(regexp = "\\A(?!\\s*\\Z).+" ,message="Your subject must consist of the characters .")
+    private String subject ;
+
+    @NotNull(message = "Please enter message")
+    @Size(min=4, max=50, message = "Your message should be at least 4 chars")
+    @Pattern(regexp = "\\A(?!\\s*\\Z).+" ,message="Your message must consist of the characters .")
+    private String message ;
 }

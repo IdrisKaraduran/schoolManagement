@@ -1,4 +1,4 @@
-package com.schoolmanagement.payload.Response;
+package com.schoolmanagement.payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,11 +13,6 @@ public class LessonResponse {
 
     private Long lessonId;
     private String lessonName;
-
     private int creditScore;
-
     private boolean isCompulsory;
-
-
-
 }

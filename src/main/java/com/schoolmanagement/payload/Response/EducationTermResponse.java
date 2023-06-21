@@ -1,5 +1,4 @@
-package com.schoolmanagement.payload.Response;
-
+package com.schoolmanagement.payload.response;
 
 import com.schoolmanagement.entity.enums.Term;
 import lombok.AllArgsConstructor;
@@ -15,10 +14,11 @@ import java.time.LocalDate;
 @Builder(toBuilder = true)
 public class EducationTermResponse {
 
-    private Long id;//fronend kullanabilir diye koyduk.Requirement te var diye koyduk.Gorevde yoksa koyma
+
+    private Long id ;
     private Term term;
     private LocalDate startDate;
-    private LocalDate endDate;
+    private  LocalDate endDate;
     private LocalDate lastRegistrationDate;
 
 }

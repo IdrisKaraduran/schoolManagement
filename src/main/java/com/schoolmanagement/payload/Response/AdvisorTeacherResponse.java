@@ -1,4 +1,4 @@
-package com.schoolmanagement.payload.Response;
+package com.schoolmanagement.payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +15,4 @@ public class AdvisorTeacherResponse {
     private String teacherName;
     private String teacherSSN;
     private String teacherSurname;
-
-
-
 }

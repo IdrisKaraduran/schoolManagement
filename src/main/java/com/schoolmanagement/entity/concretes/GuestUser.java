@@ -8,7 +8,6 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
 
-
 @Entity
 @Getter
 @Setter

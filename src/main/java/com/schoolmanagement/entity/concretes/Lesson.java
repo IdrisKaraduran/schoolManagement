@@ -9,7 +9,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 
-
 @Entity
 @Data
 @AllArgsConstructor
@@ -21,13 +20,12 @@ public class Lesson implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long lessonId;
 
-    private String lessonName;
+    private String lessonName ;
 
-    private Integer  creditScore;
+    private Integer creditScore ;
 
-    private Boolean isCompulsory;//Ders zorunlu mu bunu kontrol edecegiz.
+    private Boolean isCompulsory; // bu ders zorunlu mu ??
 
     @ManyToMany(mappedBy = "lesson")
     private Set<LessonProgram> lessonPrograms;
-
 }

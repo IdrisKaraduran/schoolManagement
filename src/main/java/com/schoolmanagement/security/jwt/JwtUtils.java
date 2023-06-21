@@ -17,65 +17,60 @@ public class JwtUtils {
 
     @Value("${backendapi.app.jwtSecret}")
     private String jwtSecret;
-    @Value("${backendapi.app.jwtExpressionMs}")
+
+    @Value("${backendapi.app.jwtExpressionMS}")
     private long jwtExpirationMs;
 
 
-    //Not Generate JWT  *****************************
-    public String generateJwtToken(Authentication authentication){
-        //anlik olarak login islemi yapan kullanici bilgisi;
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+    // Not: Generate JWT *************************************************
+    public String generateJwtToken(Authentication authentication) {
 
-        //userName bilgisi ile Jwt token uretiliyor.
+        //anlik olarak login islemi yapan kullanici bilgisi :
+        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
-        return generateTokenFromUsername(userDetails.getUsername());
-
-    }
-
-    public String generateTokenFromUsername(String username){
-
-        return Jwts.builder().
-                setSubject(username).
-                setIssuedAt(new Date()).
-                setExpiration(new Date((new Date()).getTime()*jwtExpirationMs)).
-                signWith(SignatureAlgorithm.HS512,jwtSecret).
-                compact();
+        // username bilgisi ile JWT token uretiliyor
+        return  generateTokenFromUsername(userPrincipal.getUsername());
 
     }
 
+    public String generateTokenFromUsername(String username) {
+
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .compact();
+    }
 
 
 
-    //Not Validate JWT ******************************
+
+    // Not: Validate JWT *************************************************
     public boolean validateJwtToken(String authToken){
+
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
         } catch (ExpiredJwtException e) {
-            logger.error("Jwt token is expired : {}",e.getMessage());
+            logger.error("Jwt token is expired : {}" , e.getMessage());
         } catch (UnsupportedJwtException e) {
-            logger.error("Jwt Token ist unsupported : {}",e.getMessage());
+            logger.error("JWT Token is unsupported : {}" , e.getMessage());
         } catch (MalformedJwtException e) {
-            logger.error("Invalid Jwt Token: {}",e.getMessage());
+            logger.error("Invalid Jwt Token: {}" , e.getMessage());
         } catch (SignatureException e) {
-            logger.error("Invalid JwtSignature : {}",e.getMessage());
+            logger.error("Invalid Jwt signature : {}" , e.getMessage());
         } catch (IllegalArgumentException e) {
-            logger.error("Jwt claims string is empty : {}",e.getMessage());
+            logger.error("Jwt claims string is empty: {}" , e.getMessage());
         }
+
         return false;
     }
 
 
+    // Not: getUsernameForJWT ********************************************
+    public String getUserNameFromJwtToken(String token) {
 
-    //Not getUsernameForJwt *************************
-    public String getUserNameFromJwtToken(String token){
-        return  Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
-
-
-
-
-
-
-
 }

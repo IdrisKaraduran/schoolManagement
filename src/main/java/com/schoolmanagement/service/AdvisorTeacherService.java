@@ -4,9 +4,9 @@ import com.schoolmanagement.entity.concretes.AdvisorTeacher;
 import com.schoolmanagement.entity.concretes.Teacher;
 import com.schoolmanagement.entity.enums.RoleType;
 import com.schoolmanagement.exception.ResourceNotFoundException;
-import com.schoolmanagement.payload.Response.AdvisorTeacherResponse;
-import com.schoolmanagement.payload.Response.ResponseMessage;
-import com.schoolmanagement.repository.AdvisorTeaacherRepository;
+import com.schoolmanagement.payload.response.AdvisorTeacherResponse;
+import com.schoolmanagement.payload.response.ResponseMessage;
+import com.schoolmanagement.repository.AdvisorTeacherRepository;
 import com.schoolmanagement.utils.Messages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,30 +23,33 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-
 public class AdvisorTeacherService {
 
-    private final AdvisorTeaacherRepository advisorTeaacherRepository;
+    private final AdvisorTeacherRepository advisorTeacherRepository;
     private final UserRoleService userRoleService;
+
+    // Not: deleteAdvisorTeacher() ******************************************************
     public ResponseMessage<?> deleteAdvisorTeacher(Long id) {
-      AdvisorTeacher advisorTeacher= advisorTeaacherRepository.findById(id).orElseThrow(()->
+
+        AdvisorTeacher advisorTeacher = advisorTeacherRepository.findById(id).orElseThrow(()->
                 new ResourceNotFoundException(Messages.NOT_FOUND_USER_MESSAGE));
 
-        advisorTeaacherRepository.deleteById(advisorTeacher.getId());//Burada id de yazabilirim
+        advisorTeacherRepository.deleteById(advisorTeacher.getId());
 
         return ResponseMessage.<AdvisorTeacher>builder()
                 .message("Advisor Teacher Deleted Successfully")
                 .httpStatus(HttpStatus.OK)
                 .build();
     }
-
-
+    // Not: getAllAdvisorTeacher() ******************************************************
     public List<AdvisorTeacherResponse> getAllAdvisorTeacher() {
-       return  advisorTeaacherRepository.findAll().stream()
-                .map(this::createResponseObject)
-                 .collect(Collectors.toList());
 
+        return advisorTeacherRepository.findAll()
+                .stream()
+                .map(this::createResponseObject)
+                .collect(Collectors.toList());
     }
+
     private AdvisorTeacherResponse createResponseObject(AdvisorTeacher advisorTeacher){
         return AdvisorTeacherResponse.builder()
                 .advisorTeacherId(advisorTeacher.getId())
@@ -56,66 +59,67 @@ public class AdvisorTeacherService {
                 .build();
 
     }
-
+    // Not: getAllAdvisorTeacherWithPage() **********************************************
     public Page<AdvisorTeacherResponse> search(int page, int size, String sort, String type) {
 
         Pageable pageable = PageRequest.of(page,size, Sort.by(sort).ascending());
-
         if(Objects.equals(type,"desc")){
             pageable = PageRequest.of(page,size, Sort.by(sort).descending());
         }
 
-        return advisorTeaacherRepository.findAll(pageable).map(this::createResponseObject);
+        return advisorTeacherRepository.findAll(pageable).map(this::createResponseObject);
     }
 
-    //TeacherService icin ekleme yapilacak
-    //save AdvisorTeacher
+    // Not: TeacherService icin gerekli methodlar **********************************************
 
+    // Not: saveAdvisorTeacher() ****************************************************
     public void saveAdvisorTeacher(Teacher teacher) {
-       AdvisorTeacher advisorTeacherBuilder =  AdvisorTeacher.builder()
+        AdvisorTeacher advisorTeacherBuilder =  AdvisorTeacher.builder()
                 .teacher(teacher)
                 .userRole(userRoleService.getUserRole(RoleType.ADVISORTEACHER))
                 .build();
 
-        advisorTeaacherRepository.save(advisorTeacherBuilder);
+        advisorTeacherRepository.save(advisorTeacherBuilder);
     }
-
-    //Update icin UpdateAdvisorTeacher for Teacher
+    // Not: updateAdvisorTeacher() ****************************************************
     public void updateAdvisorTeacher(boolean status, Teacher teacher) {
-   //status dedigimiz yer isAdvisor mi diye soruyoruz.
-        //Teacher Id ile iliskilendirilmis dvisor Teacher nesnesini DB den bulup gwtiriyorum.
-       Optional<AdvisorTeacher> advisorTeacher = advisorTeaacherRepository.getAdvisorTeacherByTeacher_Id(teacher.getId());
+        // !!! teacherId ile iliskilendirilmis AdvisorTeacher nesnesini DB den bulup getiriyoruz
+        Optional<AdvisorTeacher> advisorTeacher =
+                advisorTeacherRepository.getAdvisorTeacherByTeacher_Id(teacher.getId());
 
-      AdvisorTeacher.AdvisorTeacherBuilder advisorTeacherBuilder = AdvisorTeacher.builder()
+        AdvisorTeacher.AdvisorTeacherBuilder advisorTeacherBuilder = AdvisorTeacher.builder()
                 .teacher(teacher)
                 .userRole(userRoleService.getUserRole(RoleType.ADVISORTEACHER));
 
-       if(advisorTeacher.isPresent()){//cagrilan data varsa status a gore sildik yada kaydettik.
-           if(status){
-               advisorTeacherBuilder.id(advisorTeacher.get().getId());
-               advisorTeaacherRepository.save(advisorTeacherBuilder.build());
-           }else {
-               advisorTeaacherRepository.deleteById(advisorTeacher.get().getId());
-           }
-       }else {
-           advisorTeaacherRepository.save(advisorTeacherBuilder.build());
-           //TODO zaten advisor Teacher degilse bu kod calisacak
+        if(advisorTeacher.isPresent()) {
+            if(status){
+                advisorTeacherBuilder.id(advisorTeacher.get().getId());
+                advisorTeacherRepository.save(advisorTeacherBuilder.build());
+            } else {
+                advisorTeacherRepository.deleteById(advisorTeacher.get().getId());
+            }
+        } else {
+            advisorTeacherRepository.save(advisorTeacherBuilder.build()); // TODO buraya bakilacak
+        }
 
-       }
-
+/*        if (advisorTeacher.isPresent()) {
+            if (status) {
+                advisorTeacherBuilder.id(advisorTeacher.get().getId());
+                advisorTeacherRepository.save(advisorTeacherBuilder.build());
+            } else {
+                advisorTeacherRepository.deleteById(advisorTeacher.get().getId());
+            }
+        }*/
 
     }
 
-
-    //StudentService icin gerekli method
+    // Not: StudentService icin gerekli metod ***************************
     public Optional<AdvisorTeacher> getAdvisorTeacherById(Long id) {
-        return  advisorTeaacherRepository.findById(id);
+        return advisorTeacherRepository.findById(id);
     }
-
 
     public Optional<AdvisorTeacher> getAdvisorTeacherByUsername(String username) {
 
-        return advisorTeaacherRepository.findByTeacher_UsernameEquals(username);
-
+        return advisorTeacherRepository.findByTeacher_UsernameEquals(username);
     }
 }

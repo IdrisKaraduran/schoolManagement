@@ -7,8 +7,9 @@ import lombok.Data;
 @Data
 public class TeacherRequestDto {
 
-    public Teacher dtoTeacher(TeacherRequest teacherRequest){
-        return  Teacher.builder()
+    public Teacher dtoTeacher(TeacherRequest teacherRequest) {
+
+        return Teacher.builder()
                 .name(teacherRequest.getName())
                 .surname(teacherRequest.getSurname())
                 .ssn(teacherRequest.getSsn())

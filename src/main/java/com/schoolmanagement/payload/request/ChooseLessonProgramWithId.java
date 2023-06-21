@@ -17,6 +17,6 @@ import java.util.Set;
 public class ChooseLessonProgramWithId implements Serializable {
 
     @NotNull(message = "Please select lesson program")
-    @Size(min = 1,message ="lessons must not be emty" )
+    @Size(min=1, message = "lessons must not be empty")
     private Set<Long> lessonProgramId;
 }

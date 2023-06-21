@@ -3,7 +3,7 @@ package com.schoolmanagement.repository;
 import com.schoolmanagement.entity.concretes.Dean;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DeanRepository extends JpaRepository<Dean,Long> {
+public interface DeanRepository extends JpaRepository<Dean, Long> {
     boolean existsByUsername(String username);
 
     boolean existsBySsn(String ssn);

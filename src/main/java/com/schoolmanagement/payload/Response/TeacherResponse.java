@@ -1,8 +1,8 @@
-package com.schoolmanagement.payload.Response;
+package com.schoolmanagement.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.schoolmanagement.entity.concretes.LessonProgram;
-import com.schoolmanagement.payload.Response.abstracts.BaseUserResponse;
+import com.schoolmanagement.payload.response.abstracts.BaseUserResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +16,7 @@ import java.util.Set;
 @SuperBuilder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TeacherResponse extends BaseUserResponse {
+
     private Set<LessonProgram> lessonPrograms;
     private String email;
 }

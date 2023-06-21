@@ -16,39 +16,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class AuthEntryPoint_Jwt implements AuthenticationEntryPoint {
+public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 
+    // !!! Bu sinif, yetkilendirme hatasi durumunda islem yapilmasini sagliyor
 
-
-    //Bu sinif yetkilendirme hatasi durumunda islem yapilmasini sagliyor.
-    private static final Logger logger = LoggerFactory.getLogger(AuthEntryPoint_Jwt.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        //logger kullanilarak yetkilendirme hatasi kaydediliyor.
-        logger.error("Unauthorized error : {}",authException.getMessage());
 
-        //response icerigi Json olacak ve HTTP Status Cod da 401 , UnAuthorized setliyorum
+        // logger kullanilarak yetkilendirme hatasi kaydediliyor
+        logger.error("Unauthorized error : {}", authException.getMessage());
+
+        // response icerigi JSON olacak ve HTTP Status Cod da 401, UnAuthorized olacagini setliyorum
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        final Map<String,Object> body = new HashMap<>();
-        body.put("Status",HttpServletResponse.SC_UNAUTHORIZED);
-        body.put("error","Unauthorized");
-        body.put("message",authException.getMessage());
-        body.put("path",request.getServletPath());
+        final Map<String, Object> body = new HashMap<>();
+        body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
+        body.put("error", "Unauthorized");
+        body.put("message", authException.getMessage());
+        body.put("path", request.getServletPath());
 
         final ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(response.getOutputStream(),body);
-        //401 hatasinin istedigim sekilde kullaniciy gonderilmesini sagladim.
-
-
-
+        mapper.writeValue(response.getOutputStream(), body);
     }
-
-
-
-
-
-
 }

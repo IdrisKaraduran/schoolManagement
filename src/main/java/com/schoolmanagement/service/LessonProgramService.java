@@ -6,11 +6,11 @@ import com.schoolmanagement.entity.concretes.LessonProgram;
 import com.schoolmanagement.entity.concretes.Teacher;
 import com.schoolmanagement.exception.BadRequestException;
 import com.schoolmanagement.exception.ResourceNotFoundException;
-import com.schoolmanagement.payload.Response.LessonProgramResponse;
-import com.schoolmanagement.payload.Response.ResponseMessage;
-import com.schoolmanagement.payload.Response.TeacherResponse;
 import com.schoolmanagement.payload.dto.LessonProgramDto;
 import com.schoolmanagement.payload.request.LessonProgramRequest;
+import com.schoolmanagement.payload.response.LessonProgramResponse;
+import com.schoolmanagement.payload.response.ResponseMessage;
+import com.schoolmanagement.payload.response.TeacherResponse;
 import com.schoolmanagement.repository.LessonProgramRepository;
 import com.schoolmanagement.utils.CreateResponseObjectForService;
 import com.schoolmanagement.utils.Messages;
@@ -32,61 +32,54 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class LessonProgramService {
 
-
-    private final LessonService lessonService;
-    private final EducationTermService educationTermService;
-    private final LessonProgramDto lessonProgramDto;
     private final LessonProgramRepository lessonProgramRepository;
-    private final StudentService studentService;
+    private final LessonService lessonService;
+    private final LessonProgramDto lessonProgramDto;
+    private final EducationTermService educationTermService;
     private final CreateResponseObjectForService createResponseObjectForService;
 
 
-    public ResponseMessage<LessonProgramResponse> save(
-            LessonProgramRequest request) {
-
-
-      Set<Lesson> lessons =
-              lessonService.getLessonByLessonIdList(request.getLessonIdList());
-      EducationTerm educationTerm =
-              educationTermService.getById(request.getEducationTermId());
-
-      //!!!Yukarda geleenn lessons ici bos degilse zaman kontrolu
-        if(lessons.size() == 0 ){
+    // Not :  Save() *************************************************************************
+    public ResponseMessage<LessonProgramResponse> save(LessonProgramRequest request) {
+        // !!! Lesson Programda olacak dersleri LessonService uzerinden getiriyorum
+        Set<Lesson> lessons = lessonService.getLessonByLessonIdList(request.getLessonIdList());
+        // !!! EducationTerm id ile getiriliyor
+        EducationTerm educationTerm = educationTermService.getById(request.getEducationTermId());
+        // !!! yukarda gelen lessons ici bos degilse zaman kontrolu yapiliyor :
+        if(lessons.size()==0) {
             throw new ResourceNotFoundException(Messages.NOT_FOUND_LESSON_IN_LIST);
-        }else if(TimeControl.check(request.getStartTime(),request.getStopTime())){
+        } else if(TimeControl.check(request.getStartTime(), request.getStopTime())) {
             throw new BadRequestException(Messages.TIME_NOT_VALID_MESSAGE);
         }
-
-        //!!DTO -POJO
-        LessonProgram lessonProgram = lessonProgramRequestToDto(request,lessons);
-        //!!lessonProgram da education Term bilgisi setleniyor
+        // !!! DTO-POJO donusumu
+        LessonProgram lessonProgram = lessonProgramRequestToDto(request, lessons);
+        // !!! lessonProgram da educationTerm bilgisi setleniyor
         lessonProgram.setEducationTerm(educationTerm);
-        //lessonProgram DB ye kaydediliyor.
-       LessonProgram savedLessonProgram = lessonProgramRepository.save(lessonProgram);
-        //ResponMessage objesi olusturuluyor
+        //!!! lessonProgram DB ye kaydediliyor
+        LessonProgram savedLessonProgram = lessonProgramRepository.save(lessonProgram);
+        // !!! ResponseMessage objesi olusturuluyor
         return ResponseMessage.<LessonProgramResponse>builder()
-                .message("LessonProgram ist Created")
+                .message("Lesson Program is Created")
                 .httpStatus(HttpStatus.CREATED)
                 .object(createLessonProgramResponseForSaveMethod(savedLessonProgram))
                 .build();
 
     }
-    private LessonProgram lessonProgramRequestToDto(LessonProgramRequest lessonProgramRequest,Set<Lesson> lessons){
-        return lessonProgramDto.dtoLessonProgram(lessonProgramRequest,lessons);
+
+    private LessonProgram lessonProgramRequestToDto(LessonProgramRequest lessonProgramRequest, Set<Lesson> lessons) {
+        return lessonProgramDto.dtoLessonProgram(lessonProgramRequest, lessons);
     }
 
     private LessonProgramResponse createLessonProgramResponseForSaveMethod(LessonProgram lessonProgram){
-        return  LessonProgramResponse.builder()
+        return LessonProgramResponse.builder()
                 .day(lessonProgram.getDay())
                 .startTime(lessonProgram.getStartTime())
                 .stopTime(lessonProgram.getStopTime())
                 .lessonProgramId(lessonProgram.getId())
                 .lessonName(lessonProgram.getLesson())
                 .build();
+
     }
-
-
-    //GetAlll
     // Not :  getAll() *************************************************************************
     public List<LessonProgramResponse> getAllLessonProgram() {
 
@@ -102,10 +95,10 @@ public class LessonProgramService {
                 .startTime(lessonProgram.getStartTime())
                 .stopTime(lessonProgram.getStopTime())
                 .lessonProgramId(lessonProgram.getId())
-               // .lessonName(lessonProgram.getLesson())
+                //.lessonName(lessonProgram.getLesson())
                 .teachers(lessonProgram.getTeachers()
                         .stream()
-                        .map(this::createTeacher)
+                        .map(this::createTeacherResponse)
                         .collect(Collectors.toSet()))
                 .students(lessonProgram.getStudents()
                         .stream()
@@ -113,8 +106,8 @@ public class LessonProgramService {
                         .collect(Collectors.toSet()))
                 .build();
     }
-    public TeacherResponse createTeacher(Teacher teacher){
 
+    public TeacherResponse createTeacherResponse(Teacher teacher){
         return TeacherResponse.builder()
                 .userId(teacher.getId())
                 .name(teacher.getName())
@@ -129,28 +122,27 @@ public class LessonProgramService {
                 .build();
     }
 
-
+    // Not :  getById() ************************************************************************
     public LessonProgramResponse getByLessonProgramId(Long id) {
 
-     LessonProgram lessonProgram =
-             lessonProgramRepository.findById(id).orElseThrow(()->{
-            throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_LESSON_MESSAGE,id));
+        LessonProgram lessonProgram =  lessonProgramRepository.findById(id).orElseThrow(()->{
+            throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_LESSON_MESSAGE,id) );
         });
-           return lessonProgramRepository.findById(id)
-                   .map(this::createLessonProgramResponse).get();
+
+        // return lessonProgramRepository.findById(id).map(this::createLessonProgramResponse).get();
+        return createLessonProgramResponse(lessonProgram);
     }
 
-
+    // Not :  getAllLessonProgramUnassigned() **************************************************
     public List<LessonProgramResponse> getAllLessonProgramUnassigned() {
 
-
-        return lessonProgramRepository.findByTeaachers_IdNull()
+        return lessonProgramRepository.findByTeachers_IdNull()
                 .stream()
                 .map(this::createLessonProgramResponse)
                 .collect(Collectors.toList());
     }
 
-
+    // Not :  getAllLessonProgramAssigned() **************************************************
     public List<LessonProgramResponse> getAllLessonProgramAssigned() {
 
         return lessonProgramRepository.findByTeachers_IdNotNull()
@@ -159,28 +151,31 @@ public class LessonProgramService {
                 .collect(Collectors.toList());
     }
 
+    // Not :  Delete() *************************************************************************
     public ResponseMessage deleteLessonProgram(Long id) {
-        //!!! id kontrolu
+        // !!! id kontrolu
         lessonProgramRepository.findById(id).orElseThrow(()->{
             throw new ResourceNotFoundException(String.format(Messages.NOT_FOUND_LESSON_MESSAGE,id));
         });
+
         lessonProgramRepository.deleteById(id);
-        //Bu lessonPrograma dahil olan teacer ve student larda degisiklik yapilmasi gerekiyor
-        //biz bunu lessonProgram entity sinifi icinde @PreRemove ile yaptik.
+
+        // !!! bu lessonPrograma dahil olan teacher ve student lardada degisiklik yapilmasi gerekiyor , biz bunu
+        //  lessonProgram entity sinifi icinde @PreRemove ile yaptik
 
         return ResponseMessage.builder()
-                .message("Lesson Program is deleted succesfully")
+                .message("Lesson Program is deleted Successfully")
                 .httpStatus(HttpStatus.OK)
                 .build();
     }
-
-
+    // Not :  getLessonProgramByTeacher() ******************************************************
     public Set<LessonProgramResponse> getLessonProgramByTeacher(String username) {
         return lessonProgramRepository.getLessonProgramByTeacherUsername(username)
                 .stream()
                 .map(this::createLessonProgramResponseForTeacher)
                 .collect(Collectors.toSet());
     }
+
     public LessonProgramResponse createLessonProgramResponseForTeacher(LessonProgram lessonProgram) {
         return LessonProgramResponse.builder()
                 .day(lessonProgram.getDay())
@@ -188,24 +183,23 @@ public class LessonProgramService {
                 .stopTime(lessonProgram.getStopTime())
                 .lessonProgramId(lessonProgram.getId())
                 .lessonName(lessonProgram.getLesson())
-                .students(lessonProgram.getStudents().stream()
+                .students(lessonProgram.getStudents()
+                        .stream()
                         .map(createResponseObjectForService::createStudentResponse)
                         .collect(Collectors.toSet()))
                 .build();
     }
 
-
+    // Not :  getLessonProgramByStudent() ******************************************************
     public Set<LessonProgramResponse> getLessonProgramByStudent(String username) {
 
         return lessonProgramRepository.getLessonProgramByStudentUsername(username)
                 .stream()
-                .map(this::createLessonProramResponseForStudent)
+                .map(this::createLessonProgramResponseForStudent)
                 .collect(Collectors.toSet());
-
-
-
     }
-    public LessonProgramResponse createLessonProramResponseForStudent(LessonProgram lessonProgram){
+
+    public LessonProgramResponse createLessonProgramResponseForStudent(LessonProgram lessonProgram){
 
         return LessonProgramResponse.builder()
                 .day(lessonProgram.getDay())
@@ -215,25 +209,24 @@ public class LessonProgramService {
                 .lessonName(lessonProgram.getLesson())
                 .teachers(lessonProgram.getTeachers()
                         .stream()
-                        .map(this::createTeacher)
+                        .map(this::createTeacherResponse)
                         .collect(Collectors.toSet()))
                 .build();
+
     }
 
-
+    // Not :  getAllWithPage() ******************************************************************
     public Page<LessonProgramResponse> search(int page, int size, String sort, String type) {
 
         Pageable pageable = PageRequest.of(page,size, Sort.by(sort).ascending());
-        if (Objects.equals(type,"desc")){
-           pageable = PageRequest.of(page,size, Sort.by(sort).ascending());
-
+        if(Objects.equals(type,"desc")) {
+            pageable = PageRequest.of(page,size, Sort.by(sort).descending());
         }
-        return lessonProgramRepository.findAll(pageable)
-                .map(this::createLessonProgramResponse);
 
+        return lessonProgramRepository.findAll(pageable).map(this::createLessonProgramResponse);
     }
 
-
+    // Not: getLessonProgramById() ***************************************************************
     public Set<LessonProgram> getLessonProgramById(Set<Long> lessonIdList) {
 
         return lessonProgramRepository.getLessonProgramByLessonProgramIdList(lessonIdList);

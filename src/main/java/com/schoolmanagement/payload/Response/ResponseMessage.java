@@ -1,4 +1,4 @@
-package com.schoolmanagement.payload.Response;
+package com.schoolmanagement.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -11,12 +11,11 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-//jSON ICINDE null olanlarin gozukmemesini sagliyoruz.
+@JsonInclude(JsonInclude.Include.NON_NULL) // Json icindeki null olanlarin gozukmemesini sagliyoruz
+
 public class ResponseMessage<E>{
-    private E object;
+
+    private E object ;
     private String message;
     private HttpStatus httpStatus;
-
-
 }

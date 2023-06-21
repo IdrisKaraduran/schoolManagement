@@ -9,19 +9,17 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 
 @Data
-@Component
 public class LessonProgramDto {
 
-    //Dto -pojo donusumu
+    // DTO --> POJO donusumu
     public LessonProgram dtoLessonProgram(LessonProgramRequest lessonProgramRequest, Set<Lesson> lessons){
+
         return LessonProgram.builder()
                 .startTime(lessonProgramRequest.getStartTime())
                 .stopTime(lessonProgramRequest.getStopTime())
                 .day(lessonProgramRequest.getDay())
                 .lesson(lessons)
                 .build();
+
     }
-
-
-
 }

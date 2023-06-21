@@ -41,6 +41,4 @@ public class StudentInfoRequestWithoutTeacherId {
     private Long studentId;
 
 
-
-
 }

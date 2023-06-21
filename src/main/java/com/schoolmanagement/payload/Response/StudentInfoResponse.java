@@ -1,4 +1,4 @@
-package com.schoolmanagement.payload.Response;
+package com.schoolmanagement.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.schoolmanagement.entity.enums.Note;
@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder(toBuilder = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class StudentInfoResponse {
 
     private Long id;
-    private Double mittermExam;
+    private Double midtermExam;
     private Double finalExam;
     private Integer absentee;
     private String infoNote;
@@ -26,8 +26,7 @@ public class StudentInfoResponse {
     private Term educationTerm;
     private Double average;
     private Note Note;
-    private StudentResponse studentResponse;
-
+    private com.schoolmanagement.payload.response.StudentResponse studentResponse;
 
 
 }

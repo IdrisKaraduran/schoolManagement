@@ -14,5 +14,4 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 @SuperBuilder
 public class ViceDean extends User {
-
 }

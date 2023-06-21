@@ -1,4 +1,4 @@
-package com.schoolmanagement.payload.Response;
+package com.schoolmanagement.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,4 @@ public class AuthResponse {
     private String token;
     private String name;
     private String isAdvisor;
-    //Girilmeyen degerler null olur. Ancak bzim kullandigimiz JsonInclude
-    //girilmeyen dgerlerin null olarak gitmesini onluyor @JsonInclude(JsonInclude.Include.NON_NULL)
-
 }

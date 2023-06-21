@@ -1,4 +1,4 @@
-package com.schoolmanagement.payload.Response;
+package com.schoolmanagement.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.schoolmanagement.entity.concretes.EducationTerm;
@@ -26,11 +26,6 @@ public class LessonProgramResponse {
     private LocalTime stopTime;
     private Set<Lesson> lessonName;
     private EducationTerm educationTerm;
-
-    private Set<TeacherResponse> teachers;
-
-    private Set<StudentResponse> students;
-
-
-
+    private Set<com.schoolmanagement.payload.response.TeacherResponse> teachers;
+    private Set<com.schoolmanagement.payload.response.StudentResponse> students;
 }

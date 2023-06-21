@@ -6,10 +6,9 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 
 @Data
-//@Component Create ObjectBean classina ekledigimiz icin Compnente gerek yok butun component clas lardan olusacak beanleri bir class topladik ki kolay bulalim diye
 public class ViceDeanDto {
 
-    public ViceDean dtoViceDean(ViceDeanRequest viceDeanRequest){
+    public ViceDean dtoViceBean(ViceDeanRequest viceDeanRequest){
 
         return ViceDean.builder()
                 .birthDay(viceDeanRequest.getBirthDay())
@@ -22,5 +21,6 @@ public class ViceDeanDto {
                 .phoneNumber(viceDeanRequest.getPhoneNumber())
                 .gender(viceDeanRequest.getGender())
                 .build();
+
     }
 }

@@ -1,8 +1,8 @@
 package com.schoolmanagement.controller;
 
-import com.schoolmanagement.payload.Response.ContactMessageResponse;
-import com.schoolmanagement.payload.Response.ResponseMessage;
 import com.schoolmanagement.payload.request.ContactMessageRequest;
+import com.schoolmanagement.payload.response.ContactMessageResponse;
+import com.schoolmanagement.payload.response.ResponseMessage;
 import com.schoolmanagement.service.ContactMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,60 +18,66 @@ public class ContactMessageController {
 
     private final ContactMessageService contactMessageService;
 
-    //Not:Save Metodu olacak
-    @PostMapping("/save")
-    public ResponseMessage<ContactMessageResponse> save(@Valid @RequestBody ContactMessageRequest contactMessageRequest){
+    // Not: save() **********************************************
+
+    /*
+        {
+            "name" : "Mirac",
+            "email" : "xxx@yyy.com",
+            "subject" : "RestFull API",
+            "message" : "RestFull API"
+        }
+     */ // Ornek JSON
+    @PostMapping("/save") // http://localhost:8080/contactMessages/save
+    public ResponseMessage<ContactMessageResponse> save(@Valid @RequestBody ContactMessageRequest contactMessageRequest) {
 
         return contactMessageService.save(contactMessageRequest);
 
     }
 
 
-    //Not:GetAll metodu olacak
-    @GetMapping("/getAll")//Bu tarz yapilar page yapida cagrilir
+
+    // Not: getAll() ********************************************
+    @GetMapping("/getAll")  // http://localhost:8080/contactMessages/getAll
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
     public Page<ContactMessageResponse> getAll(
-            @RequestParam(value = "page",defaultValue = "0") int page,
-            @RequestParam(value = "size",defaultValue = "10") int size,
-            @RequestParam(value = "sort",defaultValue = "date") String sort,
-            @RequestParam(value = "type",defaultValue = "desc") String type
-    ){
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", defaultValue = "date") String sort,
+            @RequestParam(value = "type", defaultValue = "desc") String type
+    ) {
         return contactMessageService.getAll(page,size,sort,type);
 
     }
 
 
-    //Not:SearcByEmail
-    @GetMapping("/searchByEmail")
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")//Sadece bu hasRole sahip olanlar bu methodu kullanabilsin diye bu annotaion i yazdik.
-    public Page<ContactMessageResponse> searcByEmail(
+    // Not: searchByEmail() *************************************
+    @GetMapping("/searchByEmail") // http://localhost:8080/contactMessages/searchByEmail?email=xxx@yyy.com&page=0&size=1&sort=date&type=desc
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
+    public Page<ContactMessageResponse> searchByEmail(
             @RequestParam(value = "email") String email,
-            @RequestParam(value = "page",defaultValue = "0") int page,
-            @RequestParam(value = "size",defaultValue = "10") int size,
-            @RequestParam(value = "sort",defaultValue = "date") String sort,
-            @RequestParam(value = "type",defaultValue = "desc") String type
-
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", defaultValue = "date") String sort,
+            @RequestParam(value = "type", defaultValue = "desc") String type
     ){
         return contactMessageService.searchByEmail(email,page,size,sort,type);
     }
 
-    //Not:searchBySubject
-    @GetMapping("/searchBySubject")
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")//Sadece bu hasRole sahip olanlar bu methodu kullanabilsin diye bu annotaion i yazdik.
 
+    // Not: searchBySubject()************************************
+    @GetMapping("/searchBySubject") // http://localhost:8080/contactMessages/searchBySubject?subject=RestFull API&page=0&size=1&sort=date&type=desc
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANT_MANAGER')")
     public Page<ContactMessageResponse> searchBySubject(
             @RequestParam(value = "subject") String subject,
-            @RequestParam(value = "page",defaultValue = "0") int page,
-            @RequestParam(value = "size",defaultValue = "10") int size,
-            @RequestParam(value = "sort",defaultValue = "date") String sort,
-            @RequestParam(value = "type",defaultValue = "desc") String type
-
-    ){
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", defaultValue = "date") String sort,
+            @RequestParam(value = "type", defaultValue = "desc") String type
+    ) {
         return contactMessageService.searchBySubject(subject,page,size,sort,type);
     }
 
-
-    //Hepsinin postman de testini yap.
-    //Annotaion lar icin spring in kaynagina git orda okuyarak bunlari bulabilirsiniz.
-
-
 }
+
+// ODEV : POSTMAN de END-POINTLER test edilecek

@@ -1,4 +1,4 @@
-package com.schoolmanagement.payload.Response;
+package com.schoolmanagement.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.schoolmanagement.entity.concretes.Student;
@@ -17,6 +17,7 @@ import java.util.List;
 @Builder(toBuilder = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MeetResponse {
+
     private Long id;
     private String description;
     private LocalDate date;
@@ -27,7 +28,5 @@ public class MeetResponse {
     private String teacherSsn;
     private String username;
     private List<Student> students;
-
-
 
 }

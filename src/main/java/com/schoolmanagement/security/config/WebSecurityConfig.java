@@ -1,6 +1,6 @@
 package com.schoolmanagement.security.config;
 
-import com.schoolmanagement.security.jwt.AuthEntryPoint_Jwt;
+import com.schoolmanagement.security.jwt.AuthEntryPointJwt;
 import com.schoolmanagement.security.jwt.AuthTokenFilter;
 import com.schoolmanagement.security.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class WebSecurityConfig {
 
     private final UserDetailsServiceImpl userDetailsService;
 
-    private final AuthEntryPoint_Jwt unauthorizedHandler;
+    private final AuthEntryPointJwt unauthorizedHandler ;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -47,7 +47,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -79,24 +79,26 @@ public class WebSecurityConfig {
             "/*.js",
             "/*.json",
             "/contactMessages/save",
-            "/auth/login"
+            "/auth/login",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger*/**"
 
-};
+    };
 
-@Bean
-public WebMvcConfigurer corsConfigurer(){
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
 
-@Override
-public void addCorsMappings(CorsRegistry registry) {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
 
-        registry.addMapping("/**") // tum URL leri kapsayacagini soyledik
-        .allowedOrigins("*") // tum kaynaklara izin veriliyor
-        .allowedHeaders("*") // tum header lara izin verilecegini soyledik
-        .allowedMethods("*"); // butun HTTP methodlarina izin verildi
-        }
-        } ;
-        }
+                registry.addMapping("/**") // tum URL leri kapsayacagini soyledik
+                        .allowedOrigins("*") // tum kaynaklara izin veriliyor
+                        .allowedHeaders("*") // tum header lara izin verilecegini soyledik
+                        .allowedMethods("*"); // butun HTTP methodlarina izin verildi
+            }
+        };
+    }
 
-
-        }
+}

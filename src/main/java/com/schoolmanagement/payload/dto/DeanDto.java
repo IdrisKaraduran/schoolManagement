@@ -1,13 +1,12 @@
-
 package com.schoolmanagement.payload.dto;
 
-        import com.schoolmanagement.entity.concretes.Dean;
-        import com.schoolmanagement.payload.request.DeanRequest;
-        import lombok.Data;
-        import org.springframework.stereotype.Component;
+import com.schoolmanagement.entity.concretes.Dean;
+import com.schoolmanagement.payload.request.DeanRequest;
+import lombok.Data;
+import org.springframework.stereotype.Component;
 
 @Data
-//@Component//Bean gibi olusmasi icin componenet yazdik.
+//@Component
 public class DeanDto {
 
     // Dto - POJO

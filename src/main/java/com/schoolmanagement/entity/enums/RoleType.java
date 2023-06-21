@@ -9,7 +9,4 @@ public enum RoleType {
     ASSISTANTMANAGER,
     ADVISORTEACHER,
     GUESTUSER
-
-
-
 }

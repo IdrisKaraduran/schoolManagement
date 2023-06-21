@@ -1,14 +1,13 @@
-package com.schoolmanagement.payload.Response;
+package com.schoolmanagement.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.schoolmanagement.entity.concretes.LessonProgram;
-import com.schoolmanagement.payload.Response.abstracts.BaseUserResponse;
+import com.schoolmanagement.payload.response.abstracts.BaseUserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
@@ -26,5 +25,6 @@ public class StudentResponse extends BaseUserResponse {
     private String fatherName;
     private String email;
     private boolean isActive;
+
 
 }

@@ -1,7 +1,7 @@
 package com.schoolmanagement.utils;
 
 import com.schoolmanagement.entity.concretes.Student;
-import com.schoolmanagement.payload.Response.StudentResponse;
+import com.schoolmanagement.payload.response.StudentResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CreateResponseObjectForService {
 
-    public StudentResponse createStudentResponse(Student student){
+    public StudentResponse createStudentResponse(Student student) {
         return StudentResponse.builder()
                 .userId(student.getId())
                 .username(student.getUsername())
@@ -25,8 +25,5 @@ public class CreateResponseObjectForService {
                 .studentNumber(student.getStudentNumber())
                 .isActive(student.isActive())
                 .build();
-
-
     }
-
 }

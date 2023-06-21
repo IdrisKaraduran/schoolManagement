@@ -15,5 +15,4 @@ import javax.persistence.Entity;
 @SuperBuilder
 public class Dean extends User {
 
-
 }

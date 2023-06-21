@@ -1,10 +1,10 @@
 package com.schoolmanagement.controller;
 
 import com.schoolmanagement.entity.concretes.Student;
-import com.schoolmanagement.payload.Response.ResponseMessage;
-import com.schoolmanagement.payload.Response.StudentResponse;
 import com.schoolmanagement.payload.request.ChooseLessonProgramWithId;
 import com.schoolmanagement.payload.request.StudentRequest;
+import com.schoolmanagement.payload.response.ResponseMessage;
+import com.schoolmanagement.payload.response.StudentResponse;
 import com.schoolmanagement.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,37 +22,37 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    //save methodu
+    // Not: Save() **********************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
     @PostMapping("/save")
-    public ResponseMessage<StudentResponse> save(@RequestBody @Valid
-                        StudentRequest studentRequest){
-
+    public ResponseMessage<StudentResponse> save(@RequestBody @Valid StudentRequest studentRequest) {
         return studentService.save(studentRequest);
     }
 
-    @GetMapping("/changeStatus")//mevcut data ustunde degisiklik icin getMapping
+    // Not: changeActiveStatus() *********************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @GetMapping("/changeStatus")
     public ResponseMessage<?> changeStatus(@RequestParam Long id, @RequestParam boolean status){
         return studentService.changeStatus(id,status);
     }
 
-    //getAllStudent()
+    // Not: getAllStudent() *******************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
     @GetMapping("/getAll")
     public List<StudentResponse> getAllStudent(){
         return studentService.getAllStudent();
     }
 
-    //update
+    // Not: updateStudent() ******************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
     @PutMapping("/update/{userId}")
     public ResponseMessage<StudentResponse> updateStudent(@PathVariable Long userId,
                                                           @RequestBody @Valid StudentRequest studentRequest){
-        return studentService.updateStudent(userId,studentRequest);
+        return studentService.updateStudent(userId, studentRequest);
+
     }
 
-    //deleteStudent ById
+    // Not: deleteStudent() ******************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
     @DeleteMapping("/delete/{studentId}")
     public ResponseMessage<?> deleteStudent(@PathVariable Long studentId){
@@ -60,7 +60,8 @@ public class StudentController {
         return studentService.deleteStudent(studentId);
     }
 
-    //getStudentByName
+
+    // Not: getStudentByName() ***************************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
     @GetMapping("/getStudentByName")
     public List<StudentResponse> getStudentByName(@RequestParam(name = "name") String studentName){
@@ -68,60 +69,50 @@ public class StudentController {
         return studentService.getStudentByName(studentName);
     }
 
-    //GetStudentById
-    //TODO donen deger Pojo olmali
-    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
-    @GetMapping("/getStudentByName")
-    public Student getStudentByName(@RequestParam(name = "id") Long id){//donen deger pojo olmamali ancak gorevde boyle istedkleri icin bu sekilde yaptik.
 
+
+    // Not: getStudentById() ******************************************************
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
+    @GetMapping("/getStudentById")
+    // TODO donen deger POJO olmamali DTO olarak donmemiz gerekiyor ResponseMessage<StudentResponse>
+    public Student getStudentById(@RequestParam(name = "id") Long id) {
         return studentService.getStudentByIdForResponse(id);
     }
 
-    //getAllWithPage
+
+
+    // Not: getAllStudentWithPage() ***********************************************
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','ASSISTANTMANAGER')")
     @GetMapping("/search")
     public Page<StudentResponse> search(
-            @RequestParam(value = "page",defaultValue = "0") int page,
-            @RequestParam(value = "size",defaultValue = "10") int size,
-            @RequestParam(value = "sort",defaultValue = "name") String sort,
-            @RequestParam(value = "type",defaultValue = "desc") String type
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "size") int size,
+            @RequestParam(value = "sort") String sort,
+            @RequestParam(value = "type") String type
     ){
         return studentService.search(page,size,sort,type);
     }
 
-    //chooseLessonProgramById
+
+    // Not: chooseLessonProgramById() *********************************************
     @PreAuthorize("hasAnyAuthority('STUDENT')")
     @PostMapping("/chooseLesson")
-    public ResponseMessage<StudentResponse> chooseLesson(
-            HttpServletRequest request, @RequestBody @Valid ChooseLessonProgramWithId chooseLessonProgramRequest){
-       //Bu kisim service de yazilirsa daha iyi olur.
+    public ResponseMessage<StudentResponse> chooseLesson(HttpServletRequest request,
+                                                         @RequestBody @Valid ChooseLessonProgramWithId chooseLessonProgramRequest){
+        // bu kisimn servicede yazilirsa daha iyi olur
         String username = (String) request.getAttribute("username");
         return studentService.chooseLesson(username,chooseLessonProgramRequest);
     }
 
-    //getAllStudentByAdvisorId()
+
+    // Not : getAllStudentByAdvisorUsername() ********************************************
     @PreAuthorize("hasAnyAuthority('TEACHER')")
     @GetMapping("/getAllByAdvisorId")
-    public List<StudentResponse> getAllByAdvisorId(HttpServletRequest request){
-        String username = (String) request.getAttribute("username");
+    public List<StudentResponse>  getAllByAdvisorId(HttpServletRequest request) {
 
+        String username = (String) request.getAttribute("username");
         return studentService.getAllStudentByTeacher_Username(username);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
